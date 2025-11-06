@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+
+    <div class="dashboard-container">
+        <h1>Welcome, <span id="userName"></span>!</h1>
+        <p>Your health center updates and services are here.</p>
+
+        <div class="nav-container">
+            <a href="home.html">Dashboard</a>
+            <a href="service.html">Services</a>
+            <a href="feedback.html">Feedback</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="index.html" onclick="logoutUser()">Logout</a>
+        </div>
+
+        <div class="announcement-section">
+            <h2>Latest Announcements</h2>
+            <ul class="announcement-list">
+                <li><strong>🗓 May 20, 2025:</strong> Free medical check-up for senior citizens – 9AM to 3PM</li>
+                <li><strong>📢 Ongoing:</strong> COVID-19 vaccine booster shots available. Bring your vaccination card.</li>
+                <li><strong>🚨 Health Advisory:</strong> Increase in dengue cases. Keep your surroundings clean and dry.</li>
+                <li><strong>🩺 New Service:</strong> Prenatal and postnatal care now available every Thursday.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Load stored username from local storage
+        document.getElementById("userName").innerText = localStorage.getItem("username") || "User";
+
+        function logoutUser() {
+            localStorage.removeItem("username");
+            localStorage.removeItem("password");
+            alert("Logging out...");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!-- admin-dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        #admin-dashboard {
+            width: 60%;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin: 0;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            transition: 0.3s;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #ccc;
+        }
+        .tabcontent {
+            display: none;
+            padding: 6px 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        button, input[type="submit"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        button:hover, input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div id="admin-dashboard">
+        <div class="header">
+            <h2><a href="admin-dashboard.html" style="text-decoration: none; color: black;">Admin Dashboard</a></h2>
+            <a href="index.html" style="padding: 2px; border: none; border-radius: 5px; cursor: pointer;" onclick="logoutUser()"><button>Logout</button></a>
+        </div>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'ManageUsers')">Manage Users</button>
+            <button class="tablinks" onclick="openTab(event, 'ManageServices')">Manage Services</button>
+            <button class="tablinks" onclick="openTab(event, 'PostAnnouncement')">Post Announcement</button>
+        </div>
+
+        <div id="ManageUsers" class="tabcontent">
+            <h3>Manage Users</h3>
+            <table id="user-table">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+                <!-- Dynamic user data will be populated here -->
+                <tr>
+                    <td>JohnDoe</td>
+                    <td>johndoe@example.com</td>
+                    <td>User</td>
+                    <td><button>Edit</button> <button>Delete</button></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="ManageServices" class="tabcontent">
+            <h3>Manage Services</h3>
+            <table id="service-table">
+                <tr>
+                    <th>Service Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                <!-- Dynamic service data will be populated here -->
+                <tr>
+                    <td>Medical Check-up</td>
+                    <td>Free medical check-up for senior citizens</td>
+                    <td>Available</td>
+                    <td>
+                        <button onclick="changeStatus(this)">Make Unavailable</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>COVID-19 Vaccine</td>
+                    <td>COVID-19 vaccine booster shots available</td>
+                    <td>Available</td>
+                    <td>
+                        <button onclick="changeStatus(this)">Make Unavailable</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Prenatal and Postnatal Care</td>
+                    <td>Prenatal and postnatal care now available every Thursday</td>
+                    <td>Available</td>
+                    <td>
+                        <button onclick="changeStatus(this)">Make Unavailable</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dental Care</td>
+                    <td>Dental care services available</td>
+                    <td>Unavailable</td>
+                    <td>
+                        <button onclick="changeStatus(this)">Make Available</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+            </table>
+            <button onclick="addService()">Add New Service</button>
+        </div>
+
+        <div id="PostAnnouncement" class="tabcontent">
+            <h3>Post Announcement</h3>
+            <form>
+                <label for="announcement-title">Title:</label>
+                <input type="text" id="announcement-title" name="announcement-title" required>
+                <label for="announcement-content">Content:</label>
+                <textarea id="announcement-content" name="announcement-content" required></textarea>
+                <input type="submit" value="Post Announcement">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Open the first tab by default
+        document.getElementsByClassName("tablinks")[0].click();
+
+        function changeStatus(button) {
+            var row = button.parentNode.parentNode;
+            var statusCell = row.cells[2];
+            if (statusCell.textContent === "Available") {
+                statusCell.textContent = "Unavailable";
+                button.textContent = "Make Available";
+            } else {
+                statusCell.textContent = "Available";
+                button.textContent = "Make Unavailable";
+            }
+        }
+
+        function addService() {
+            var table = document.getElementById("service-table");
+            var row = table.insertRow(table.rows.length);
+            var nameCell = row.insertCell(0);
+            var descCell = row.insertCell(1);
+            var statusCell = row.insertCell(2);
+            var actionCell = row.insertCell(3);
+
+            nameCell.innerHTML = "<input type='text' placeholder='Service Name'>";
+            descCell.innerHTML = "<input type='text' placeholder='Description'>";
+            statusCell.textContent = "Available";
+            actionCell.innerHTML = "<button onclick='saveService(this)'>Save</button> <button onclick='cancelService(this)'>Cancel</button>";
+        }
+
+        function saveService(button) {
+            var row = button.parentNode.parentNode;
+            var nameCell = row.cells[0];
+            var descCell = row.cells[1];
+            nameCell.textContent = nameCell.children[0].value;
+            descCell.textContent = descCell.children[0].value;
+            row.cells[3].innerHTML = "<button onclick='changeStatus(this)'>Make Unavailable</button> <button>Edit</button> <button>Delete</button>";
+        }
+
+        function cancelService(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function logoutAdmin() {
+            // You can add code here to handle admin logout
+            alert("Logging out...");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

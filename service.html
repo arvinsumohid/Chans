@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RHU Villanueva | Services</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Form Styles */
+    .appointment-form {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+
+    .appointment-form h2 {
+      margin-top: 0;
+      color: #2a2a2a;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .appointment-form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .appointment-form input,
+    .appointment-form select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border 0.2s;
+    }
+
+    .appointment-form input:focus,
+    .appointment-form select:focus {
+      outline: none;
+      border-color: #2e8b57;
+    }
+
+    .appointment-form button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2e8b57;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .appointment-form button:hover {
+      background-color: #256d46;
+    }
+
+    .appointment-confirmation {
+      margin-top: 30px;
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #2e8b57;
+    }
+
+    .appointment-confirmation h3 {
+      margin-top: 0;
+      color: #2e8b57;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-overlay"></div>
+
+  <header>
+    <h1>RHU VILLANUEVA</h1>
+    <h1>Welcome, <span id="userName"></span>!</h1>
+        <p>Your health center updates and services are here.</p>
+  </header>
+
+  <nav class="nav-container">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="service.html">Services</a>
+    <a href="feedback.html">Feedback</a>
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="index.html" onclick="logoutUser()">Logout</a>
+  </nav>
+
+  <main>
+    <section class="services-section">
+      <h2>Our Services</h2>
+      <div class="services-list">
+        <div class="services-section">
+          <h2>Health Center Services & Appointments</h2>
+
+          <div class="services-list">
+            <div class="service-item" onclick="toggleOffers('checkupOffers')">
+              <h3>General Checkup</h3>
+              <p>Routine medical consultations for all ages.</p>
+              <div class="service-offers" id="checkupOffers" style="display: none;">
+                <button onclick="selectService('General Checkup')">Standard Consultation</button>
+                <button onclick="selectService('General Checkup')">Heart Screening</button>
+                <button onclick="selectService('General Checkup')">Diabetes Test</button>
+              </div>
+            </div>
+
+            <div class="service-item" onclick="toggleOffers('vaccinationOffers')">
+              <h3>Vaccination</h3>
+              <p>Available for children and adults, including booster shots.</p>
+              <div class="service-offers" id="vaccinationOffers" style="display: none;">
+                <button onclick="selectService('Vaccination')">COVID Booster</button>
+                <button onclick="selectService('Vaccination')">Flu Shot</button>
+              </div>
+            </div>
+
+            <div class="service-item" onclick="toggleOffers('dentalOffers')">
+              <h3>Dental Care</h3>
+              <p>Basic dental check-ups and preventive care.</p>
+              <div class="service-offers" id="dentalOffers" style="display: none;">
+                <button onclick="selectService('Dental')">Basic Checkup</button>
+                <button onclick="selectService('Dental')">Deep Cleaning</button>
+              </div>
+            </div>
+
+            <div class="service-item" onclick="toggleOffers('prenatalOffers')">
+              <h3>Prenatal Care</h3>
+              <p>Comprehensive pregnancy care and guidance.</p>
+              <div class="service-offers" id="prenatalOffers" style="display: none;">
+                <button onclick="selectService('Prenatal')">First Trimester</button>
+                <button onclick="selectService('Prenatal')">Ultrasound</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="appointment-form">
+            <h2>Book an Appointment</h2>
+            <form id="appointmentForm">
+              <label for="appointmentDate">Select Date:</label>
+              <input type="date" id="appointmentDate" required>
+
+              <label for="appointmentTime">Select Time:</label>
+              <input type="time" id="appointmentTime" required>
+
+              <label for="serviceType">Select Service:</label>
+              <select id="serviceType" required>
+                <option value="">-- Select a specific offer --</option>
+              </select>
+
+              <button type="submit">Confirm Appointment</button>
+            </form>
+
+            <div class="appointment-confirmation">
+              <h3>Upcoming Appointment:</h3>
+              <p id="appointmentDetails">No appointment scheduled.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="calendar-wrapper">
+    <div class="calendar-toggle">📅 Calendar</div>
+    <div class="calendar-container">
+      <iframe src="https://calendar.google.com/calendar/embed?src=en.philippines%23holiday%40group.v.calendar.google.com&ctz=Asia%2FManila"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const offers = {
+      "General Checkup": ["Standard Consultation", "Heart Screening", "Diabetes Test"],
+      "Vaccination": ["COVID Booster", "Flu Shot"],
+      "Dental": ["Basic Checkup", "Deep Cleaning"],
+      "Prenatal": ["First Trimester", "Ultrasound"]
+    };
+
+    function toggleOffers(id) {
+      let offers = document.getElementById(id);
+      offers.style.display = offers.style.display === "block" ? "none" : "block";
+    }
+
+    function selectService(category) {
+      const select = document.getElementById("serviceType");
+      select.innerHTML = '<option value="">-- Select a specific offer --</option>';
+
+      const selectedOffers = offers[category];
+      if (selectedOffers) {
+        const group = document.createElement("optgroup");
+        group.label = category;
+
+        selectedOffers.forEach(offer => {
+          const option = document.createElement("option");
+          option.value = `${category} - ${offer}`;
+          option.textContent = offer;
+          group.appendChild(option);
+        });
+
+        select.appendChild(group);
+      }
+    }
+
+    function loadAllServicesToDropdown() {
+      const select = document.getElementById("serviceType");
+      select.innerHTML = '<option value="">-- Select a specific offer --</option>';
+
+      for (const category in offers) {
+        const group = document.createElement("optgroup");
+        group.label = category;
+
+        offers[category].forEach(offer => {
+          const option = document.createElement("option");
+          option.value = `${category} - ${offer}`;
+          option.textContent = offer;
+          group.appendChild(option);
+        });
+
+        select.appendChild(group);
+      }
+    }
+
+    document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const appointmentDate = document.getElementById("appointmentDate").value;
+      const appointmentTime = document.getElementById("appointmentTime").value;
+      const serviceType = document.getElementById("serviceType").value;
+
+      document.getElementById("appointmentDetails").innerHTML =
+        `Date: ${appointmentDate}, Time: ${appointmentTime}, Service: ${serviceType}`;
+    });
+    // Load stored username from local storage
+        document.getElementById("userName").innerText = localStorage.getItem("username") || "User";
+
+        function logoutUser() {
+            localStorage.removeItem("username");
+            localStorage.removeItem("password");
+            alert("Logging out...");
+            window.location.href = "login.html";
+        }
+    // Automatically load all services to the dropdown when page loads
+    window.onload = loadAllServicesToDropdown;
+  </script>
+</body>
+</html>
