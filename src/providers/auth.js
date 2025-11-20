@@ -3,7 +3,6 @@ import { setCookie, removeCookie } from "../utils/cookieHelper";
 
 export const login = async (username, password) => {
     try {
-        console.log(import.meta.env.VITE_API_URL);
       const { data } = await axiosInstance.post('/auth/login', { username, password });
       setCookie('access_token', data.access_token);
       setCookie('user_id', data.user.id);

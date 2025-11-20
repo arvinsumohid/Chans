@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import RegistrationForm from '../../components/forms/RegistrationForm'
+import PublicRoute from '../../routes/Publicroute'
 
 const RegisterPage = () => {
   return (
@@ -12,4 +13,6 @@ const RegisterPage = () => {
   )
 }
 
-export default RegisterPage
+
+const ProtectedRegisterPage = PublicRoute(RegisterPage);
+export default ProtectedRegisterPage
