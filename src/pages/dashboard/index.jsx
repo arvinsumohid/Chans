@@ -3,7 +3,8 @@ import EventCalendar from "../../components/EventCalendar"
 
 const DashboardPage = () => {
     return (
-    <EventCalendar />
+    // <EventCalendar />
+    <h1>Dashboard Page</h1>
     )
 }
 

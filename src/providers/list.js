@@ -14,3 +14,10 @@ export const getServices = async (params) => {
 
     return data;
 }
+
+export const getAppointmentByCalendar = async (params) => {
+    const { from, to } = params;
+    const data = await tryCatch(() => axiosInstance.get('/appointments/calendar', { params: { from, to } }));
+
+    return data;
+}
