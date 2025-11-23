@@ -49,7 +49,7 @@ const AppointmentPage = () => {
     <Box className="flex flex-col gap-4">
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
             <Typography variant="h6">My Appointments</Typography>
-            {getCookie('role') === 'user' && (
+            {getCookie('user_role') === 'user' && (
               <Button variant="contained" color="primary" onClick={handleOpen}>Add Appointment</Button>
             )}
         </Box>

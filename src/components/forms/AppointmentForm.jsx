@@ -35,7 +35,6 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
     }, []);
 
   const doctorsList = useMemo(() => {
-    console.log('doctors', doctors);
     return doctors.map((doctor) => ({
       label: doctor.doctor.lastname + ", " + doctor.doctor.firstname,
       id: doctor.doctor.id,
@@ -59,9 +58,6 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
   const handleServiceChange = async (event, newValue) => {
     const doctors = await getDoctorServicesByServiceId(newValue.id);
     setAppointmentData((prev) => ({ ...prev, service: newValue, doctor: null }));
-
-    console.log('doctors', doctors);
-
     setDoctors(doctors.data.data || []);
   };
 
