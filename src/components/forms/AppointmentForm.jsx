@@ -1,8 +1,8 @@
 import { Card, Typography, Autocomplete, TextField, Button, Box } from "@mui/material";
 import { useState, useEffect, useMemo } from "react";
-import { getDoctors } from "../../providers/list";
+import { getServices } from "../../providers/list";
 import { useAlert } from "../../hooks/useAlert";
-import { getDoctorServices } from "../../providers/detail";
+import { getDoctorServicesByServiceId } from "../../providers/detail";
 import { getCookie } from "../../utils/cookieHelper";
 import { createAppointment } from "../../providers/create";
 import CustomCalendar from "../CustomCalendar";
@@ -19,25 +19,26 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
     });
 
     useEffect(() => {
-        const fetchDoctors = async () => {
+        const fetchServices = async () => {
             try {
-                const response = await getDoctors({ 
+                const response = await getServices({ 
                     page: 1, // API might be 1-indexed
                     size: 999 
                 });
-                setDoctors(response.data.data.items || []);
+                setServices(response.data.data.items || []);
             } catch (err) {
                 showAlert(err.message, 'error');
             }
         };
 
-        fetchDoctors();       
+        fetchServices();       
     }, []);
 
   const doctorsList = useMemo(() => {
+    console.log('doctors', doctors);
     return doctors.map((doctor) => ({
-      label: doctor.lastname + ", " + doctor.firstname,
-      id: doctor.id,
+      label: doctor.doctor.lastname + ", " + doctor.doctor.firstname,
+      id: doctor.doctor.id,
     }));
   }, [doctors]);
 
@@ -45,22 +46,27 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
     if (!services) return [];
 
     const sList = services.map((service) => {
-        if (!service.service) return null;
+        if (!service) return null;
       return {
-        label: service.service.name,
-        id: service.service.id,
+        label: service.name,
+        id: service.id,
       };
     });
 
     return sList.filter((service) => service !== null);
   }, [services]);
 
+  const handleServiceChange = async (event, newValue) => {
+    const doctors = await getDoctorServicesByServiceId(newValue.id);
+    setAppointmentData((prev) => ({ ...prev, service: newValue, doctor: null }));
+
+    console.log('doctors', doctors);
+
+    setDoctors(doctors.data.data || []);
+  };
+
   const handleDoctorChange = async (event, newValue) => {
     setAppointmentData((prev) => ({ ...prev, doctor: newValue }));
-    const services = await getDoctorServices(newValue.id);
-    setAppointmentData((prev) => ({ ...prev, service: null }));
-
-    setServices(services.data.data || []);
   };
 
   const handleSubmit = async (e) => {
@@ -115,20 +121,17 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 2 }}>
         <Autocomplete
           fullWidth
+          options={servicesList}
+          value={appointmentData.service}
+          onChange={handleServiceChange}
+          renderInput={(params) => <TextField {...params} label="Service" />}
+        />
+        <Autocomplete
+          fullWidth
           options={doctorsList}
           value={appointmentData.doctor}
           onChange={handleDoctorChange}
           renderInput={(params) => <TextField {...params} label="Doctor" />}
-        />
-
-        <Autocomplete
-          fullWidth
-          options={servicesList}
-          value={appointmentData.service}
-          onChange={(event, newValue) =>
-            setAppointmentData((prev) => ({ ...prev, service: newValue }))
-          }
-          renderInput={(params) => <TextField {...params} label="Service" />}
         />
         <CustomCalendar
           value={appointmentData.appointment_date}

@@ -5,6 +5,7 @@ import ProtectedRoute from '../../routes/ProtectedRoute'
 import AppointmentPopup from '../../components/popup/AppointmentPopup'
 import { useAlert } from '../../hooks/useAlert';
 import { getAppointmentByCalendar } from '../../providers/list'
+import { getCookie } from '../../utils/cookieHelper'
 
 const AppointmentPage = () => {
     const { showAlert } = useAlert();
@@ -33,7 +34,6 @@ const AppointmentPage = () => {
 
           setAppointments(response.data.data);
         } catch (error) {
-          console.log('Error fetching appointments:', error);
           showAlert(error.message, 'error');
           setLoadList(false);
         }
@@ -43,15 +43,15 @@ const AppointmentPage = () => {
     }, [dateFilter, showAlert, loadList]);
 
     const fetchEventsForMonth = (from, to) => {
-      console.log('from:', from);
-      console.log('to:', to);
       setDateFilter({from, to});
     }
   return (
     <Box className="flex flex-col gap-4">
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
             <Typography variant="h6">My Appointments</Typography>
-            <Button variant="contained" color="primary" onClick={handleOpen}>Add Appointment</Button>
+            {getCookie('role') === 'user' && (
+              <Button variant="contained" color="primary" onClick={handleOpen}>Add Appointment</Button>
+            )}
         </Box>
         <EventCalendar loadList={loadList} events={appointments} fetchEventsForMonth={fetchEventsForMonth}/>
         <AppointmentPopup open={open} setLoadList={setLoadList} handleClose={handleClose} />

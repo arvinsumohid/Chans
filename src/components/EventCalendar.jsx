@@ -6,14 +6,28 @@ import { Box } from "@mui/material";
 
 const EventCalendar = ({ events, fetchEventsForMonth }) => {
   const appointmentData = useMemo(() => {
-    console.log('events', events);
-    return events.map((appointment) => ({
+
+    return events.map((appointment) => {
+      if (!appointment) return null;
+
+      if (appointment.user) {
+        return {
+          id: appointment.id,
+          title: `Dr. ${appointment.doctor_service.doctor.lastname} – ${appointment.user.gender === "male" ? "Mr." : "Ms."} ${appointment.user.lastname} Appointment`,
+          event_type: "appointment",
+          start_date: appointment.appointment_date,
+          color: "green"
+        }
+      }
+
+      return {
         id: appointment.id,
         title: `${appointment.doctor_service.service.name} Appointment – Dr. ${appointment.doctor_service.doctor.lastname}`,
         event_type: "appointment",
         start_date: appointment.appointment_date,
-        color: "green",
-    }))
+        color: "green"
+      }
+    })
   },[events])
 
   // const [filterType, setFilterType] = useState("all");
@@ -51,7 +65,10 @@ const EventCalendar = ({ events, fetchEventsForMonth }) => {
         }}
         eventContent={(arg) => {
           return (
-            <span className='capitalize'>{arg.event.title}</span>
+            <span
+              className='capitalize'
+              title={arg.event.title}
+            >{arg.event.title}</span>
           )
         }}
       />

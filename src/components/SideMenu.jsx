@@ -15,7 +15,7 @@ const menuItems = [
   { text: 'Users', path: '/users', icon: <PeopleIcon />, access: 'admin' },
   { text: 'Doctors', path: '/doctors', icon: <MedicationIcon />, access: 'admin' },
   { text: 'Services', path: '/services', icon: <VaccinesIcon />, access: 'admin' },
-  { text: 'Appointments', path: '/appointments', icon: <BookOnlineIcon />, access: 'user' },
+  { text: 'Appointments', path: '/appointments', icon: <BookOnlineIcon />, access: 'all' },
 ];
 
 const SideMenu = ({ open, onClose }) => {
