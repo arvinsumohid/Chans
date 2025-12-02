@@ -27,8 +27,8 @@ export const createDoctorService = async (doctorServiceData) => {
 }
 
 
-export const createAppointment = async (appointmentData) => {
-    const data = await tryCatch(() => axiosInstance.post('/appointments', appointmentData));
+export const createEvent = async (eventData) => {
+    const data = await tryCatch(() => axiosInstance.post('/events', eventData));
 
     return data;
 }

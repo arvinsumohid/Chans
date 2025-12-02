@@ -5,7 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import AppointmentForm from '../forms/AppointmentForm'
 import { Button } from '@mui/material'
 
-const AppointmentPopup = ({ open, setLoadList, handleClose }) => {
+const AppointmentPopup = ({ open, setLoadList, handleClose, title = 'Appointment' }) => {
     return (
         <Dialog
             open={open}
@@ -13,9 +13,9 @@ const AppointmentPopup = ({ open, setLoadList, handleClose }) => {
             fullWidth
             maxWidth="sm"
         >  
-            <DialogTitle>Appointment</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent >
-                <AppointmentForm isPopup={true} onClose={handleClose} setLoadList={setLoadList}/>
+                <AppointmentForm title={title} isPopup={true} onClose={handleClose} setLoadList={setLoadList}/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Close</Button>

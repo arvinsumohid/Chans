@@ -1,10 +1,9 @@
 import ProtectedRoute from "../../routes/ProtectedRoute"
-import EventCalendar from "../../components/EventCalendar"
+import DashboardContainer from "./DashboardContainer"
 
 const DashboardPage = () => {
     return (
-    // <EventCalendar />
-    <h1>Dashboard Page</h1>
+        <DashboardContainer />
     )
 }
 
