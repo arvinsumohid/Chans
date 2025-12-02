@@ -31,11 +31,10 @@ const DoctorListPopup = ({ loadList, setLoadList, id }) => {
             if (matches) {
                 return (
                     <Box>
-                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleUnselectDoctor(params)}>Selected</Button>
+                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleUnselectDoctor(params)}>Remove</Button>
                     </Box>
                 )
             }
-
             return (
                 <Box>
                     <Button color="success" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleSelectDoctor(params)}>Select</Button>
@@ -46,8 +45,8 @@ const DoctorListPopup = ({ loadList, setLoadList, id }) => {
 
     const handleSelectDoctor = async (params) => {
         const doctorServiceData = {
-            service_id: id,
-            doctor_ids: [params.row.id]
+            service_ids: [id],
+            doctor_id: params.row.id
         };
         await createDoctorService(doctorServiceData);
         setLoadList(true);

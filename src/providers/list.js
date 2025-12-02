@@ -15,9 +15,16 @@ export const getServices = async (params) => {
     return data;
 }
 
-export const getAppointmentByCalendar = async (params) => {
-    const { from, to } = params;
-    const data = await tryCatch(() => axiosInstance.get('/appointments/calendar', { params: { from, to } }));
+export const getEventList = async (params) => {
+    const { page, size, search, type } = params;
+    const data = await tryCatch(() => axiosInstance.get('/events', { params: { page, size, search, type } }));
+
+    return data;
+}
+
+export const getEventByCalendar = async (params) => {
+    const { from, to, type } = params;
+    const data = await tryCatch(() => axiosInstance.get('/events/calendar', { params: { from, to, type } }));
 
     return data;
 }

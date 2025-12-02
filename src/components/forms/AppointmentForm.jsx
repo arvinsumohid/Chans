@@ -4,18 +4,18 @@ import { getServices } from "../../providers/list";
 import { useAlert } from "../../hooks/useAlert";
 import { getDoctorServicesByServiceId } from "../../providers/detail";
 import { getCookie } from "../../utils/cookieHelper";
-import { createAppointment } from "../../providers/create";
+import { createEvent } from "../../providers/create";
 import CustomCalendar from "../CustomCalendar";
 import dayjs from 'dayjs';
 
-const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
+const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appointment' }) => {
     const { showAlert } = useAlert();
     const [doctors, setDoctors] = useState([]);
     const [services, setServices] = useState([]);
     const [appointmentData, setAppointmentData] = useState({
         doctor: null,
         service: null,
-        appointment_date: null,
+        event_date: null,
     });
 
     useEffect(() => {
@@ -35,7 +35,6 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
     }, []);
 
   const doctorsList = useMemo(() => {
-    console.log('doctors', doctors);
     return doctors.map((doctor) => ({
       label: doctor.doctor.lastname + ", " + doctor.doctor.firstname,
       id: doctor.doctor.id,
@@ -60,8 +59,6 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
     const doctors = await getDoctorServicesByServiceId(newValue.id);
     setAppointmentData((prev) => ({ ...prev, service: newValue, doctor: null }));
 
-    console.log('doctors', doctors);
-
     setDoctors(doctors.data.data || []);
   };
 
@@ -75,12 +72,12 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
       showAlert("Please select both doctor and service", 'error');
       return;
     }
-    if (!appointmentData.appointment_date) {
+    if (!appointmentData.event_date) {
       showAlert("Please select a date", 'error');
       return;
     }
 
-    if (appointmentData.appointment_date.isBefore(dayjs())) {
+    if (appointmentData.event_date.isBefore(dayjs())) {
       showAlert("Please select a date in the future", 'error');
       return;
     }
@@ -90,18 +87,18 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
             user_id: getCookie( 'user_id'),
             doctor_id: appointmentData.doctor.id,
             service_id: appointmentData.service.id,
-            appointment_date: appointmentData.appointment_date,
+            event_date: appointmentData.event_date,
         }
-      await createAppointment(data);
+      await createEvent(data);
       !isPopup && onClose();
       setLoadList(true);
       setAppointmentData({
         doctor: null,
         service: null,
-        appointment_date: null,
+        event_date: null,
       });
       onClose();
-      showAlert("Appointment added successfully", 'success');
+      showAlert(`${title} added successfully`, 'success');
     } catch (err) {
       showAlert(err.message, 'error');
     }
@@ -115,7 +112,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
       onSubmit={handleSubmit}
     >
       <Typography variant="h6" gutterBottom>
-        Add Appointment
+        Add {title}
       </Typography>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 2 }}>
@@ -134,10 +131,10 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false }) => {
           renderInput={(params) => <TextField {...params} label="Doctor" />}
         />
         <CustomCalendar
-          value={appointmentData.appointment_date}
-          onChange={(newValue) => setAppointmentData((prev) => ({ ...prev, appointment_date: newValue }))}
+          value={appointmentData.event_date}
+          onChange={(newValue) => setAppointmentData((prev) => ({ ...prev, event_date: newValue }))}
           label="Date"
-          name="appointment_date"
+          name="event_date"
           errors={[]}
         />
       </Box>

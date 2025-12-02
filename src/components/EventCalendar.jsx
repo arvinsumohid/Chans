@@ -4,28 +4,29 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useMemo} from "react";
 import { Box } from "@mui/material";
 
-const EventCalendar = ({ events, fetchEventsForMonth }) => {
+const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' }) => {
   const appointmentData = useMemo(() => {
-
     return events.map((appointment) => {
       if (!appointment) return null;
+      
+      let color = "green";
+      let title = `${appointment.doctor_service.service.name} Appointment – Dr. ${appointment.doctor_service.doctor.lastname}`;
 
-      if (appointment.user) {
-        return {
-          id: appointment.id,
-          title: `Dr. ${appointment.doctor_service.doctor.lastname} – ${appointment.user.gender === "male" ? "Mr." : "Ms."} ${appointment.user.lastname} Appointment`,
-          event_type: "appointment",
-          start_date: appointment.appointment_date,
-          color: "green"
-        }
+      if (appointment.type === 'event') {
+        color = "blue"
+        title = appointment.doctor_service.service.name
+      }
+
+      if (appointment.user && appointment.type !== 'event') {
+        title = `Dr. ${appointment.doctor_service.doctor.lastname} – ${appointment.user.gender === "male" ? "Mr." : "Ms."} ${appointment.user.lastname} Appointment`;
       }
 
       return {
         id: appointment.id,
-        title: `${appointment.doctor_service.service.name} Appointment – Dr. ${appointment.doctor_service.doctor.lastname}`,
-        event_type: "appointment",
-        start_date: appointment.appointment_date,
-        color: "green"
+        title,
+        event_type: appointment.type,
+        start_date: appointment.event_date,
+        color
       }
     })
   },[events])
@@ -61,7 +62,7 @@ const EventCalendar = ({ events, fetchEventsForMonth }) => {
           const from = info.start;
           const to = info.end;
 
-          fetchEventsForMonth(from, to);
+          fetchEventsForMonth(from, to, eventType);
         }}
         eventContent={(arg) => {
           return (
