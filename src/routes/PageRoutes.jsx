@@ -8,6 +8,7 @@ const UserPage = lazy(() => import('../pages/user'))
 const DoctorPage = lazy(() => import('../pages/doctor'))
 const ServicePage = lazy(() => import('../pages/service'))
 const AppointmentPage = lazy(() => import('../pages/appointment'))
+const AnnouncementPage = lazy(() => import('../pages/announcement'))
 import { AlertProvider } from '../contexts/AlertContext'; 
 
 const PageRoutes = () => {
@@ -22,6 +23,7 @@ const PageRoutes = () => {
             <Route path="/doctors" element={<DoctorPage />} />
             <Route path="/services" element={<ServicePage />} />
             <Route path="/appointments" element={<AppointmentPage />} />
+            <Route path="/announcement" element={<AnnouncementPage />} />
           </Routes>
         </AlertProvider>
       </BrowserRouter>

@@ -3,11 +3,11 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import AppointmentForm from '../forms/AppointmentForm'
+import AnnouncementForm from '../forms/AnnouncementForm'
 import { Button } from '@mui/material'
 import { LoadListContext } from '../../contexts/LoadListContext';
 
-const AppointmentPopup = ({ open, handleClose, title = 'Appointment' }) => {
+const AnnouncementPopup = ({ open, handleClose, title = 'Announcement' }) => {
     const { setLoadList } = useContext(LoadListContext);
     return (
         <Dialog
@@ -18,7 +18,7 @@ const AppointmentPopup = ({ open, handleClose, title = 'Appointment' }) => {
         >  
             <DialogTitle>{title}</DialogTitle>
             <DialogContent >
-                <AppointmentForm title={title} isPopup={true} onClose={handleClose} setLoadList={setLoadList}/>
+                <AnnouncementForm title={title} isPopup={true} onClose={handleClose} setLoadList={setLoadList}/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Close</Button>
@@ -27,4 +27,4 @@ const AppointmentPopup = ({ open, handleClose, title = 'Appointment' }) => {
     )
 }
 
-export default AppointmentPopup
+export default AnnouncementPopup

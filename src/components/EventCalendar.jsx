@@ -2,29 +2,30 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useMemo} from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { getCookie } from "../utils/cookieHelper";
 
 const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' }) => {
   const appointmentData = useMemo(() => {
     return events.map((appointment) => {
       if (!appointment) return null;
       
-      let color = "green";
-      let title = `${appointment.doctor_service.service.name} Appointment – Dr. ${appointment.doctor_service.doctor.lastname}`;
+      let color = "oklch(72.3% 0.219 149.579)";
+      let title = `${appointment.service_name} Appointment – Dr. ${appointment.doctor_lastname}`;
 
-      if (appointment.type === 'event') {
-        color = "blue"
-        title = appointment.doctor_service.service.name
+      if (appointment.entity_type === 'event') {
+        color = "oklch(62.3% 0.214 259.815)"
+        title = appointment.announcement_name
       }
 
-      if (appointment.user && appointment.type !== 'event') {
-        title = `Dr. ${appointment.doctor_service.doctor.lastname} – ${appointment.user.gender === "male" ? "Mr." : "Ms."} ${appointment.user.lastname} Appointment`;
+      if (getCookie('user_role') === 'admin' && appointment.entity_type !== 'event') {
+        title = `Dr. ${appointment.doctor_lastname} Appointment to ${appointment.user_gender === "male" ? "Mr." : "Ms."} ${appointment.user_lastname}`;
       }
 
       return {
-        id: appointment.id,
+        id: appointment.event_id,
         title,
-        event_type: appointment.type,
+        event_type: appointment.entity_type,
         start_date: appointment.event_date,
         color
       }
@@ -50,14 +51,9 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
         initialView="dayGridMonth"
         events={appointmentData.map((evt) => ({
           title: evt.title,
-          date: evt.start_date,
-          color: evt.color,
+          start: evt.start_date,
+          backgroundColor: evt.color,
         }))}
-        // events={filtered.map((evt) => ({
-        //   title: evt.title,
-        //   date: evt.start_date,
-        //   color: evt.color,
-        // }))}
         datesSet={(info) => {
           const from = info.start;
           const to = info.end;
@@ -66,10 +62,12 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
         }}
         eventContent={(arg) => {
           return (
-            <span
-              className='capitalize'
+            <Typography
+              variant="body2"
+              sx={{ backgroundColor: arg.event.backgroundColor }}
+              className={`capitalize w-full overflow-hidden text-white`}
               title={arg.event.title}
-            >{arg.event.title}</span>
+            >{arg.event.title}</Typography>
           )
         }}
       />
