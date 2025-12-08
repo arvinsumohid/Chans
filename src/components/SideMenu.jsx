@@ -7,15 +7,17 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 import PeopleIcon from '@mui/icons-material/People';
 import { getCookie } from '../utils/cookieHelper';
 
 const menuItems = [
   { text: 'Dashboard', path: '/', icon: <DashboardIcon />, access: 'all' },
+  { text: 'Announcement', path: '/announcement', icon: <AnnouncementIcon />, access: 'all' },
+  { text: 'Appointments', path: '/appointments', icon: <BookOnlineIcon />, access: 'all' },
   { text: 'Users', path: '/users', icon: <PeopleIcon />, access: 'admin' },
   { text: 'Doctors', path: '/doctors', icon: <MedicationIcon />, access: 'admin' },
   { text: 'Services', path: '/services', icon: <VaccinesIcon />, access: 'admin' },
-  { text: 'Appointments', path: '/appointments', icon: <BookOnlineIcon />, access: 'all' },
 ];
 
 const SideMenu = ({ open, onClose }) => {

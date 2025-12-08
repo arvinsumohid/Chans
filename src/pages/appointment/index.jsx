@@ -1,29 +1,33 @@
-import { useState } from 'react'
+import { useState, lazy } from 'react'
 import { Box, Typography, Button } from '@mui/material'
-import EventCalendar from '../../components/EventCalendar'
 import ProtectedRoute from '../../routes/ProtectedRoute'
 import AppointmentPopup from '../../components/popup/AppointmentPopup'
-import { getEventByCalendar } from '../../providers/list'
 import { getCookie } from '../../utils/cookieHelper'
-import { useEventCalendar } from '../../hooks/useEventCalendar';
+import { LoadListProvider } from '../../contexts/LoadListContext';
+
+const AdminActivityLog = lazy(() => import('./AdminActivityLog'));
+const UserActivity = lazy(() => import('./UserActivityLog'));
 
 const AppointmentPage = () => {
-  const { loadList, setLoadList, appointments, fetchEventsForMonth } = useEventCalendar(getEventByCalendar);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return (
-    <Box className="flex flex-col gap-4">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
-            <Typography variant="h6">My Appointments</Typography>
-            {getCookie('user_role') === 'user' && (
-              <Button variant="contained" color="primary" onClick={handleOpen}>Add Appointment</Button>
-            )}
-        </Box>
-        <EventCalendar loadList={loadList} events={appointments} fetchEventsForMonth={fetchEventsForMonth}/>
-        <AppointmentPopup open={open} setLoadList={setLoadList} handleClose={handleClose} />
-    </Box>
+    <LoadListProvider>
+      <Box className="flex flex-col gap-4">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
+              {getCookie('user_role') === 'user' && (
+                <>
+                  <Typography variant="h6">Appointments</Typography>
+                  <Button variant="contained" color="primary" onClick={handleOpen}>Add Appointment</Button>
+                </>
+              )}
+          </Box>
+          {getCookie('user_role') === 'user' ? <UserActivity /> : <AdminActivityLog />}
+          <AppointmentPopup open={open} handleClose={handleClose} />
+      </Box>
+    </LoadListProvider>
   )
 }
 

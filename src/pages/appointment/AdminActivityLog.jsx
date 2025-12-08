@@ -7,7 +7,7 @@ const AdminActivityLog = () => {
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h2" sx={{ fontSize: '28px' }}>Appointments</Typography>
-      <ActivityLog eventType="appointment" />
+      <ActivityLog eventType="appointment" userType="admin" />
     </Box>
   )
 }

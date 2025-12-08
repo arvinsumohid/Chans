@@ -4,7 +4,7 @@ import { getEventList } from '../../providers/list'
 import { useAlert } from '../../hooks/useAlert'
 import { LoadListContext } from '../../contexts/LoadListContext';
 
-const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
+const AnnouncementList = ({ userType = 'admin' }) => {
     const { showAlert } = useAlert();
     const {loadList, setLoadList} = useContext(LoadListContext);
     const [totalItem, setTotalItem] = useState(0);
@@ -16,16 +16,10 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
     const columnsByUserType = useMemo(() => {
         const columns = [
-            { flex: 1, field: 'doctor', headerName: 'Doctor', renderCell: (params) => {
-                return <span className="capitalize">Dr. {params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
+            { flex: 1, field: 'name', headerName: 'Title', renderCell: (params) => {
+                return <span className="capitalize" title={params.row.announcement_description}>{params.row.announcement_name}</span>;
             }},
-            { flex: 1, field: 'service', headerName: 'Service', renderCell: (params) => {
-                return <span className="capitalize">{params.row.service_name}</span>;
-            } },
-            { flex: 1, field: 'user', headerName: 'User', renderCell: (params) => {
-                return <span className="capitalize">{params.row.user_gender === "male" ? "Mr." : "Ms."} {params.row.user_lastname}, {params.row.user_firstname}</span>;
-            } },
-            { flex: 1, field: 'event_date', headerName: 'Appointment Date', renderCell: (params) => {
+            { flex: 1, field: 'event_date', headerName: 'Event Date', renderCell: (params) => {
                 const date = new Date(params.row.event_date);
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -43,12 +37,12 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
 
     useEffect(() => {
-        const fetchDoctors = async () => {
+        const fetchEvents = async () => {
             try {
                 const response = await getEventList({ 
                     page: paginationModel.page + 1,
                     size: paginationModel.pageSize,
-                    type: eventType
+                    type: 'event'
                 });
                 setActivityLogs(response.data.data.items || []);
                 setTotalItem(response.data.data.total_item || 0);
@@ -59,8 +53,8 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             }
         };
 
-        fetchDoctors();       
-    }, [paginationModel.page, paginationModel.pageSize, eventType, loadList]);
+        fetchEvents();       
+    }, [paginationModel.page, paginationModel.pageSize, loadList]);
 
   return (
     <DataGrid
@@ -87,4 +81,4 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
   )
 }
 
-export default ActivityLog
+export default AnnouncementList

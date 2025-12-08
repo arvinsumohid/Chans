@@ -88,6 +88,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
             doctor_id: appointmentData.doctor.id,
             service_id: appointmentData.service.id,
             event_date: appointmentData.event_date,
+            type: 'appointment'
         }
       await createEvent(data);
       !isPopup && onClose();
