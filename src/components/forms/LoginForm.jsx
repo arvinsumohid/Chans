@@ -45,10 +45,9 @@ const LoginForm = () => {
   return (
     <Box component="form" onSubmit={handleSubmit}>
         <Box className="text-center">
-            <Typography sx={{ fontSize: '2rem', fontWeight: '500' }} variant="h1">Log In</Typography>
-            <Typography sx={{ fontSize: '1rem' }} variant="body1">Welcome back! Please enter your details</Typography>
+            <Typography sx={{ fontSize: '2rem', fontWeight: '500' }} variant="h1">Welcome to RHU Villanueva</Typography>
         </Box>
-        <Box>
+        <Box sx={{ mt: 2 }}>
             <TextField
                 error={error.username}
                 helperText={error.username ? 'Please enter a valid username' : ''}
