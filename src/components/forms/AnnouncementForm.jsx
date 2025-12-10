@@ -78,7 +78,7 @@ const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Anno
         />
         <TextField
             fullWidth
-            label="Description (Optional)"
+            label="Description"
             name="description"
             value={announcementData.description}
             onChange={(e) => setAnnouncementData((prev) => ({ ...prev, description: e.target.value }))}
