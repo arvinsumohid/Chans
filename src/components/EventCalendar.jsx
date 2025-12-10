@@ -49,6 +49,7 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
+        dayMaxEvents={3}
         events={appointmentData.map((evt) => ({
           title: evt.title,
           start: evt.start_date,
