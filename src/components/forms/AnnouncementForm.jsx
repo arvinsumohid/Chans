@@ -17,7 +17,7 @@ const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Anno
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!announcementData.name || !announcementData.description) {
-      showAlert("Please select both doctor and service", 'error');
+      showAlert("Please enter both name and description", 'error');
       return;
     }
     if (!announcementData.event_date) {
@@ -84,6 +84,7 @@ const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Anno
             onChange={(e) => setAnnouncementData((prev) => ({ ...prev, description: e.target.value }))}
             margin="normal"
             multiline
+            required
             rows={3}
         />
         <CustomCalendar
