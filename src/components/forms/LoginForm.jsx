@@ -4,6 +4,8 @@ import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useAlert } from '../../hooks/useAlert';
 import { login } from '../../providers/auth';
 
+import { PrimaryThemeColor } from '../../utils/constant';
+
 const LoginForm = () => {
     const navigate = useNavigate();
     const { showAlert } = useAlert();
@@ -76,9 +78,8 @@ const LoginForm = () => {
         <Button
             type="submit"
             variant="contained"
-            color="primary"
             fullWidth
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, ...PrimaryThemeColor }}
         >
             Login
         </Button>

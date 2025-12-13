@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { createService } from '../../providers/create';
+import React, { useEffect, useState } from 'react'
+import { createService, updateService } from '../../providers/create';
 import { useAlert } from '../../hooks/useAlert';
 import { Card, TextField, Button, Box, Typography } from '@mui/material'
+import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant';
 
-const ServiceForm = ({ onClose, setLoadList, isPopup = false }) => {
+const ServiceForm = ({ onClose, setLoadList, isPopup = false, service = {} }) => {
     const { showAlert } = useAlert();
     const [errors, setErrors] = useState({});
     const [serviceData, setServiceData] = useState({
@@ -11,6 +12,16 @@ const ServiceForm = ({ onClose, setLoadList, isPopup = false }) => {
         description: '',
         is_active: true,
     });
+
+    useEffect(() => {
+        const updateServiceData = () => {
+            if (service.id) {
+                setServiceData(service);
+            }
+        }
+
+        updateServiceData()
+    }, [service]);
 
     const handleChange = (e) => {
         setServiceData({
@@ -22,9 +33,29 @@ const ServiceForm = ({ onClose, setLoadList, isPopup = false }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) return;
-        await createService(serviceData);
-        !isPopup && onClose();
-        setLoadList(true);
+
+        let updateRes;
+        if (service.id) {
+            try {
+                updateRes = await updateService(service.id, serviceData);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        } else {
+            try {
+                updateRes = await createService(serviceData);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
+
+        if (updateRes.status === 200 || updateRes.status === 201) {
+            showAlert(updateRes.status === 200 ? 'Service updated successfully' : 'Service added successfully', 'success');
+            onClose();
+            setLoadList(true);
+        } else {
+            showAlert('Something went wrong', 'error')
+        }
     };
 
     const validateForm = () => {
@@ -34,13 +65,16 @@ const ServiceForm = ({ onClose, setLoadList, isPopup = false }) => {
         if (!serviceData.description.trim()) newErrors.description = 'Description is required';
         
         setErrors(newErrors);
-        showAlert(Object.keys(newErrors).length === 0 ? 'Service added successfully' : 'Please fill all required fields', Object.keys(newErrors).length === 0 ? 'success' : 'error');
-        return Object.keys(newErrors).length === 0;
+        if (Object.keys(newErrors).length > 0) {
+            showAlert('Please fill all required fields', 'error');
+            return false;
+        }
+        return true;
     };
   return (
     <Card variant="outlined" className="max-w-[600px] p-4" component="form" onSubmit={handleSubmit}>
         <Typography variant="h6" gutterBottom>
-            Add Service
+            {service.id ? 'Edit Service' : 'Add Service'}
         </Typography>
         <Box className="flex flex-col gap-4">
             <TextField
@@ -67,8 +101,8 @@ const ServiceForm = ({ onClose, setLoadList, isPopup = false }) => {
             />
             </Box>
         <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-            <Button variant="contained" type="submit">Save</Button>
-            {!isPopup && <Button variant="outlined" onClick={onClose}>Cancel</Button>}
+            <Button variant="contained" sx={{ ...PrimaryThemeColor }} type="submit">Save</Button>
+            {!isPopup && <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={onClose}>Cancel</Button>}
         </Box>
     </Card>
   )

@@ -8,6 +8,13 @@ export const getDoctors = async (params) => {
     return data;
 }
 
+export const getUsers = async (params) => {
+    const { page, size, search } = params;
+    const data = await tryCatch(() => axiosInstance.get('/users', { params: { page, size, search } }));
+
+    return data;
+}
+
 export const getServices = async (params) => {
     const { page, size, search } = params;
     const data = await tryCatch(() => axiosInstance.get('/services', { params: { page, size, search } }));
@@ -16,8 +23,8 @@ export const getServices = async (params) => {
 }
 
 export const getEventList = async (params) => {
-    const { page, size, search, type } = params;
-    const data = await tryCatch(() => axiosInstance.get('/events', { params: { page, size, search, type } }));
+    const { page, size, search, type, from, to } = params;
+    const data = await tryCatch(() => axiosInstance.get('/events', { params: { page, size, search, type, from, to } }));
 
     return data;
 }

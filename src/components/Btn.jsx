@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, ButtonProps, CircularProgress } from '@mui/material';
+import { PrimaryThemeColor } from '../utils/constant';
 
 const Btn = ({
   label,
@@ -30,6 +31,7 @@ const Btn = ({
       onClick={onClick}
       sx={{
         textTransform: 'none',
+        ...PrimaryThemeColor
       }}
       {...extraProps}
       {...rest}

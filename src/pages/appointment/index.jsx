@@ -4,6 +4,7 @@ import ProtectedRoute from '../../routes/ProtectedRoute'
 import AppointmentPopup from '../../components/popup/AppointmentPopup'
 import { getCookie } from '../../utils/cookieHelper'
 import { LoadListProvider } from '../../contexts/LoadListContext';
+import { PrimaryThemeColor } from '../../utils/constant'
 
 const AdminActivityLog = lazy(() => import('./AdminActivityLog'));
 const UserActivity = lazy(() => import('./UserActivityLog'));
@@ -16,12 +17,10 @@ const AppointmentPage = () => {
   return (
     <LoadListProvider>
       <Box className="flex flex-col gap-4">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="h6">Appointments</Typography>
               {getCookie('user_role') === 'user' && (
-                <>
-                  <Typography variant="h6">Appointments</Typography>
-                  <Button variant="contained" color="primary" onClick={handleOpen}>Add Appointment</Button>
-                </>
+                <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={handleOpen}>Add Appointment</Button>
               )}
           </Box>
           {getCookie('user_role') === 'user' ? <UserActivity /> : <AdminActivityLog />}

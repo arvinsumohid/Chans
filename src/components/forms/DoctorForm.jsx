@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, TextField, Card, Typography, Button } from '@mui/material'
-import { createDoctor } from '../../providers/create';
+import { createDoctor, updateDoctor } from '../../providers/create';
 import { useAlert } from '../../hooks/useAlert';
+import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant';
 
-const DoctorForm = ({ onClose, setLoadList, isPopup = false }) => {
+const DoctorForm = ({ onClose, setLoadList, isPopup = false, doctor = {} }) => {
     const { showAlert } = useAlert();
     const [errors, setErrors] = useState({});
     const [doctorData, setDoctorData] = useState({
@@ -13,6 +14,16 @@ const DoctorForm = ({ onClose, setLoadList, isPopup = false }) => {
         description: '',
         is_active: true,
     });
+    
+    useEffect(() => {
+        const updateDoctorData = () => {
+            if (doctor.id) {
+                setDoctorData(doctor);
+            }
+        }
+
+        updateDoctorData()
+    }, [doctor]);
 
     const handleChange = (e) => {
         setDoctorData({
@@ -24,9 +35,28 @@ const DoctorForm = ({ onClose, setLoadList, isPopup = false }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) return;
-        await createDoctor(doctorData);
-        !isPopup && onClose();
-        setLoadList(true);
+        let updateRes;
+        if (doctor.id) {
+            try {
+                updateRes = await updateDoctor(doctor.id, doctorData);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        } else {
+            try {
+                updateRes = await createDoctor(doctorData);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
+
+        if (updateRes.status === 200 || updateRes.status === 201) {
+            showAlert(updateRes.status === 200 ? 'Doctor updated successfully' : 'Doctor added successfully', 'success');
+            onClose();
+            setLoadList(true);
+        } else {
+            showAlert('Something went wrong', 'error')
+        }
     };
 
     const validateForm = () => {
@@ -89,8 +119,8 @@ const DoctorForm = ({ onClose, setLoadList, isPopup = false }) => {
                 required
             />
             <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                <Button variant="contained" type="submit">Save</Button>
-                {!isPopup && <Button variant="outlined" onClick={onClose}>Cancel</Button>}
+                <Button variant="contained" sx={{ ...PrimaryThemeColor }} type="submit">Save</Button>
+                {!isPopup && <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={onClose}>Cancel</Button>}
             </Box>
         </Card>
     )

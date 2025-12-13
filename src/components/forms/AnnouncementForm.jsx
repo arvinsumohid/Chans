@@ -1,18 +1,29 @@
 import { Card, Typography, TextField, Button, Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAlert } from "../../hooks/useAlert";
 import { getCookie } from "../../utils/cookieHelper";
-import { createEvent } from "../../providers/create";
+import { createEvent, updateEvent } from "../../providers/create";
 import CustomCalendar from "../CustomCalendar";
 import dayjs from 'dayjs';
+import { PrimaryColor, PrimaryThemeColor } from "../../utils/constant";
 
-const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Announcement' }) => {
+const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Announcement', event = {} }) => {
     const { showAlert } = useAlert();
     const [announcementData, setAnnouncementData] = useState({
-        name: null,
-        description: null,
+        name: '',
+        description: '',
         event_date: null,
     });
+
+    useEffect(() => {
+        const updateServiceData = () => {
+            if (event.id) {
+                setAnnouncementData(event);
+            }
+        }
+
+        updateServiceData()
+    }, [event]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,16 +49,26 @@ const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Anno
             event_date: announcementData.event_date,
             type: 'event'
         }
-      await createEvent(data);
-      !isPopup && onClose();
-      setLoadList(true);
-      setAnnouncementData({
-        name: null,
-        description: null,
-        event_date: null,
-      });
-      onClose();
-      showAlert(`${title} added successfully`, 'success');
+        let updateRes;
+
+        if (event.id) {
+          updateRes = await updateEvent(event.id, data);
+        } else {
+          updateRes = await createEvent(data);
+        }
+
+        if (updateRes.status === 200 || updateRes.status === 201) {
+            showAlert(updateRes.status === 200 ? 'Announcement updated successfully' : 'Announcement added successfully', 'success');
+            onClose();
+            setLoadList(true);
+            setAnnouncementData({
+              name: '',
+              description: '',
+              event_date: null,
+            });
+        } else {
+            showAlert('Something went wrong', 'error')
+        }
     } catch (err) {
       showAlert(err.message, 'error');
     }
@@ -97,10 +118,10 @@ const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Anno
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-        <Button variant="contained" type="submit">
+        <Button variant="contained" sx={{ ...PrimaryThemeColor }} type="submit">
           Save
         </Button>
-        {!isPopup && <Button variant="outlined" onClick={onClose}>
+        {!isPopup && <Button sx={{ borderColor: PrimaryColor, color: PrimaryColor }} variant="outlined" onClick={onClose}>
           Cancel
         </Button>}
       </Box>

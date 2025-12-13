@@ -1,12 +1,28 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, lazy, Activity } from 'react'
 import { Box, Paper, Typography, List, ListItem } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid';
 import { useAlert } from '../../hooks/useAlert';
 import { getServices } from '../../providers/list';
-import ActionButtons from '../../pages/service/ActionButtons';
+import ActionButtons from '../ActionButtons';
+import { LoadListContext } from '../../contexts/LoadListContext';
+import { getStatus } from '../../utils/util.helper';
+import { AnnouncementColor, PrimaryColor } from '../../utils/constant';
+import ToolbarFilter from '../ToolbarFilter';
+
+const DoctorsPopup = lazy(() => import('../popup/DoctorsPopup'));
+const EditServicePopup = lazy(() => import('../popup/EditServicePopup'));
+
 
 const ServiceList = ({ loadList, setLoadList }) => {
-    const { showAlert } = useAlert();   
+    const { loadList: editLoadList, setLoadList: editSetLoadList } = useContext(LoadListContext);
+    const { showAlert } = useAlert();
+    
+    const [isAddDoctor, setIsAddDoctor] = useState(false);
+    const [isEditService, setIsEditService] = useState(false);
+    const [idSelected, setIdSelected] = useState(null);
+    
+    const [search, setSearch] = useState('');
+
     const [loading, setLoading] = useState(false);
     const [services, setServices] = useState([]);
     const [totalItem, setTotalItem] = useState(0);
@@ -14,6 +30,11 @@ const ServiceList = ({ loadList, setLoadList }) => {
         page: 0,
         pageSize: 10,
     });
+
+    const dropDownOptions = [
+        { label: 'Name', value: 'name' },
+        { label: 'Doctor', value: 'doctor' },
+    ];
 
     const columns = [
         { flex: 1, field: 'name', headerName: 'Name' },
@@ -38,9 +59,22 @@ const ServiceList = ({ loadList, setLoadList }) => {
                 );
             },
         },
-        { flex: 1, field: 'is_active', headerName: 'Status', renderCell: (params) => params.row.is_active ? 'Yes' : 'No' },
+        { flex: 1, field: 'is_active', headerName: 'Status', renderCell: (params) => {
+                        const status = getStatus(params.row);
+                        const sx = {
+                            textTransform: 'uppercase',
+                        };
+        
+                        if (status === 'INACTIVE') {
+                            sx.color = AnnouncementColor;
+                        } else {
+                            sx.color = PrimaryColor;
+                        }
+        
+                        return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
+                }},
         { flex: 1, field: 'actions', headerName: 'Actions', renderCell: (params) => (
-            <ActionButtons id={params.row.id}  setLoadList={setLoadList}/>
+            <ActionButtons id={params.row.id} addText='Add Doctor' editText='Edit Service' onAdd={onAddDoctor} onEdit={onEditService}/>
         )},
     ];
 
@@ -50,20 +84,50 @@ const ServiceList = ({ loadList, setLoadList }) => {
                 setLoading(true);
                 const response = await getServices({ 
                     page: paginationModel.page + 1,
-                    size: paginationModel.pageSize 
+                    size: paginationModel.pageSize,
+                    search,
                 });
                 setServices(response.data.data.items || []);
                 setTotalItem(response.data.data.total_item || 0);
                 setLoadList(false);
+                editSetLoadList(false);
             } catch (err) {
                 showAlert(err.message, 'error');
             } finally {
                 setLoading(false);
+                editSetLoadList(false);
             }
         };
 
         fetchDoctors();       
-    }, [paginationModel.page, paginationModel.pageSize, loadList]);
+    }, [paginationModel.page, paginationModel.pageSize, loadList, editLoadList, search]);
+
+    const onAddDoctor = (id) => {
+        setIdSelected(id);
+        setIsAddDoctor(true);
+    };
+    
+    const onEditService = (id) => {
+        setIdSelected(id);
+        setIsEditService(true);
+    }
+
+    const handleAddDoctorClose = () => {
+        setIsAddDoctor(false);
+        setLoadList(true);
+    };
+
+    const handleEditServiceClose = () => {
+        setIsEditService(false);
+    }
+
+    const handleSearch = (query, field) => {
+        if (query && field) {
+            setSearch(`${field}::${query}`)
+        } else {
+            setSearch('');
+        }
+    }
 
     return (
         <>
@@ -72,8 +136,11 @@ const ServiceList = ({ loadList, setLoadList }) => {
                     Services
                 </Typography>
             </Box>
+            <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} showDateRange={false} />
             <Paper sx={{ width: '100%' }}>
                 <DataGrid
+                    disableColumnSorting
+                    disableColumnMenu
                     rows={services}
                     columns={columns}
                     getRowHeight={() => 'auto'}
@@ -94,6 +161,12 @@ const ServiceList = ({ loadList, setLoadList }) => {
                     disableRowSelectionOnClick
                 />
             </Paper>
+            <Activity mode={isAddDoctor ? "visible" : "hidden"}>
+                <DoctorsPopup open={isAddDoctor} handleClose={handleAddDoctorClose} id={idSelected}/>
+            </Activity>
+            <Activity mode={isEditService ? "visible" : "hidden"}>
+                <EditServicePopup open={isEditService} handleClose={handleEditServiceClose} id={idSelected}/>
+            </Activity>
         </>
     )
 }

@@ -6,6 +6,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import AnnouncementForm from '../forms/AnnouncementForm'
 import { Button } from '@mui/material'
 import { LoadListContext } from '../../contexts/LoadListContext';
+import { PrimaryColor } from '../../utils/constant';
 
 const AnnouncementPopup = ({ open, handleClose, title = 'Announcement' }) => {
     const { setLoadList } = useContext(LoadListContext);
@@ -21,7 +22,7 @@ const AnnouncementPopup = ({ open, handleClose, title = 'Announcement' }) => {
                 <AnnouncementForm title={title} isPopup={true} onClose={handleClose} setLoadList={setLoadList}/>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Close</Button>
+                <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={handleClose}>Close</Button>
             </DialogActions>
         </Dialog>
     )

@@ -15,7 +15,7 @@ const DashboardContainer = () => {
               <Typography variant="h1" sx={{ fontSize: '28px' }}>Upcoming Events</Typography>
           </Box>
         </Grid>
-        <Grid className="mx-auto" size={{ xs: 12, sm: 12, md: 10 }}>
+        <Grid className="mx-auto" size={12}>
           <Box className="flex flex-col gap-4">
               <EventCalendar eventType="all" loadList={loadList} events={appointments} fetchEventsForMonth={fetchEventsForMonth}/>
           </Box>
