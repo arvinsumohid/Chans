@@ -4,17 +4,18 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useMemo} from "react";
 import { Box, Typography } from "@mui/material";
 import { getCookie } from "../utils/cookieHelper";
+import { TertiaryThemeColor, AnnouncementColor } from "../utils/constant";
 
 const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' }) => {
   const appointmentData = useMemo(() => {
     return events.map((appointment) => {
       if (!appointment) return null;
       
-      let color = "oklch(72.3% 0.219 149.579)";
+      let color = TertiaryThemeColor.backgroundColor;
       let title = `${appointment.service_name} Appointment – Dr. ${appointment.doctor_lastname}`;
 
       if (appointment.entity_type === 'event') {
-        color = "oklch(62.3% 0.214 259.815)"
+        color = AnnouncementColor
         title = appointment.announcement_name
       }
 

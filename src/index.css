@@ -81,3 +81,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+.fc {
+  --fc-button-bg-color: #1b5e20;        /* normal */
+  --fc-button-border-color: #1b5e20;
+  --fc-button-text-color: #ffffff;
+
+  --fc-button-hover-bg-color: #43a047;  /* hover */
+  --fc-button-hover-border-color: #43a047;
+
+  --fc-button-active-bg-color: #2e7d32; /* active */
+  --fc-button-active-border-color: #2e7d32;
+}

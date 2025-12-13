@@ -5,6 +5,7 @@ import { useAlert } from '../../hooks/useAlert';
 import { getServices } from '../../providers/list';
 import { createDoctorService } from '../../providers/create';
 import { deleteDoctorService } from '../../providers/delete';
+import { PrimaryThemeColor } from '../../utils/constant';
 
 const ServiceListPopup = ({ loadList, setLoadList, id }) => {
     const { showAlert } = useAlert();   
@@ -36,7 +37,7 @@ const ServiceListPopup = ({ loadList, setLoadList, id }) => {
 
             return (
                 <Box>
-                    <Button color="success" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleSelectService(params)}>Select</Button>
+                    <Button color="success" variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} size="small" onClick={() => handleSelectService(params)}>Select</Button>
                 </Box>
             )
         }},
@@ -99,6 +100,8 @@ const ServiceListPopup = ({ loadList, setLoadList, id }) => {
             </Box>
             <Paper sx={{ width: '100%' }}>
                 <DataGrid
+                    disableColumnSorting
+                    disableColumnMenu
                     rows={services}
                     columns={columns}
                     getRowHeight={() => 'auto'}

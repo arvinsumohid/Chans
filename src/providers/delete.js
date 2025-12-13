@@ -6,3 +6,9 @@ export const deleteDoctorService = async (doctorServiceData) => {
 
     return data;
 }
+
+export const deleteAnnouncement = async (id) => {
+    const data = await tryCatch(() => axiosInstance.delete(`/events/${id}`));
+
+    return data;
+}

@@ -13,8 +13,20 @@ export const createDoctor = async (doctorData) => {
     return data;
 }
 
+export const updateDoctor = async (id, doctorData) => {
+    const data = await tryCatch(() => axiosInstance.put(`/doctors/${id}`, doctorData));
+
+    return data;
+}
+
 export const createService = async (serviceData) => {
     const data = await tryCatch(() => axiosInstance.post('/services', serviceData));
+
+    return data;
+}
+
+export const updateService = async (id, serviceData) => {
+    const data = await tryCatch(() => axiosInstance.put(`/services/${id}`, serviceData));
 
     return data;
 }
@@ -29,6 +41,12 @@ export const createDoctorService = async (doctorServiceData) => {
 
 export const createEvent = async (eventData) => {
     const data = await tryCatch(() => axiosInstance.post('/events', eventData));
+
+    return data;
+}
+
+export const updateEvent = async (id, eventData) => {
+    const data = await tryCatch(() => axiosInstance.put(`/events/${id}`, eventData));
 
     return data;
 }

@@ -1,13 +1,14 @@
-import { Box } from '@mui/material'
+import { Paper } from '@mui/material'
 import { lazy } from 'react'
+import { getCookie } from '../../utils/cookieHelper';
 
 const AnnouncementList = lazy(() => import('../../components/tables/AnnouncementList'));
 
 const AnnouncementLog = () => {
   return (
-    <Box sx={{ p: 2 }}>
-      <AnnouncementList userType="admin" />
-    </Box>
+    <Paper sx={{ width: '100%' }}>
+      <AnnouncementList userType={getCookie('user_role') === 'admin' ? 'admin' : 'user'} />
+    </Paper>
   )
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, useState } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, useTheme, useMediaQuery, Button } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { logout } from '../providers/auth';
@@ -11,6 +11,8 @@ import AnnouncementIcon from '@mui/icons-material/Announcement';
 import PeopleIcon from '@mui/icons-material/People';
 import { getCookie } from '../utils/cookieHelper';
 
+const ConfirmationPopup = lazy(() => import('../components/popup/ConfirmationPopup'))
+
 const menuItems = [
   { text: 'Dashboard', path: '/', icon: <DashboardIcon />, access: 'all' },
   { text: 'Announcement', path: '/announcement', icon: <AnnouncementIcon />, access: 'all' },
@@ -22,6 +24,7 @@ const menuItems = [
 
 const SideMenu = ({ open, onClose }) => {
   const navigate = useNavigate();
+  const [openConfirmationPopup, setOpenConfirmationPopup] = useState(false);
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -38,63 +41,71 @@ const SideMenu = ({ open, onClose }) => {
   };
 
   return (
-    <Drawer
-      variant={isMobile ? 'temporary' : 'permanent'}
-      open={isMobile ? open : true}
-      onClose={onClose}
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
+    <>
+      <Drawer
+        variant={isMobile ? 'temporary' : 'permanent'}
+        open={isMobile ? open : true}
+        onClose={onClose}
+        sx={{
           width: 240,
-          boxSizing: 'border-box',
-          marginTop: '64px', // Height of the header
-          height: 'calc(100vh - 64px)',
-        },
-      }}
-    >
-      <Divider />
-      <List>
-        {menuItems.map((item) => {
-          if (item.access === getCookie('user_role') || item.access === 'all') 
-            return (
-              <ListItem
-                button={Button}
-                key={item.path}
-                onClick={() => handleNavigation(item.path)}
-                selected={location.pathname === item.path}
-                sx={{
-                  '&.Mui-selected': {
-                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                    '&:hover': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.12)',
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+            marginTop: '64px', // Height of the header
+            height: 'calc(100vh - 64px)',
+          },
+        }}
+      >
+        <Divider />
+        <List>
+          {menuItems.map((item) => {
+            if (item.access === getCookie('user_role') || item.access === 'all') 
+              return (
+                <ListItem
+                  button={Button}
+                  key={item.path}
+                  onClick={() => handleNavigation(item.path)}
+                  selected={location.pathname === item.path}
+                  sx={{
+                    '&.Mui-selected': {
+                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                      },
                     },
-                  },
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            )
-        })}
-        <ListItem
-          button={Button}
-          key="logout"
-          onClick={handleLogout}
-          sx={{
-            '&.Mui-selected': {
-              backgroundColor: 'rgba(25, 118, 210, 0.08)',
-              '&:hover': {
-                backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItem>
+              )
+          })}
+          <ListItem
+            button={Button}
+            key="logout"
+            onClick={() => setOpenConfirmationPopup(true)}
+            sx={{
+              '&.Mui-selected': {
+                backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                '&:hover': {
+                  backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                },
               },
-            },
-          }}
-        >
-          <ListItemIcon><LogoutIcon /></ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
-      </List>
-    </Drawer>
+            }}
+          >
+            <ListItemIcon><LogoutIcon /></ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </List>
+      </Drawer>
+      <ConfirmationPopup
+        open={openConfirmationPopup}
+        message="Are you sure you want to logout?"
+        onConfirm={handleLogout}
+        onCancel={() => setOpenConfirmationPopup(false)}
+      />
+    </>
   );
 };
 

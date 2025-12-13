@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Button } from '@mui/material'
 import ServicesPopup from '../../components/popup/ServicesPopup'
+import { PrimaryThemeColor } from '../../utils/constant';
 
 const ActionButtons = ({ id, setLoadList }) => {
     const [open, setOpen] = React.useState(false);
@@ -17,9 +18,8 @@ const ActionButtons = ({ id, setLoadList }) => {
   return (
     <>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <Button color="success" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleOpen(id)}>Add Services</Button>
+          <Button color="success" variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} size="small" onClick={() => handleOpen(id)}>Add Services</Button>
       </Box>
-      <ServicesPopup open={open} handleClose={handleClose} id={id} />
     </>
   )
 }

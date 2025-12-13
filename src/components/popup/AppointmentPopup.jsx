@@ -6,6 +6,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import AppointmentForm from '../forms/AppointmentForm'
 import { Button } from '@mui/material'
 import { LoadListContext } from '../../contexts/LoadListContext';
+import { PrimaryColor } from '../../utils/constant';
 
 const AppointmentPopup = ({ open, handleClose, title = 'Appointment' }) => {
     const { setLoadList } = useContext(LoadListContext);
@@ -21,7 +22,7 @@ const AppointmentPopup = ({ open, handleClose, title = 'Appointment' }) => {
                 <AppointmentForm title={title} isPopup={true} onClose={handleClose} setLoadList={setLoadList}/>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Close</Button>
+                <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={handleClose}>Close</Button>
             </DialogActions>
         </Dialog>
     )

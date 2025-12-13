@@ -4,11 +4,12 @@ import { getServices } from "../../providers/list";
 import { useAlert } from "../../hooks/useAlert";
 import { getDoctorServicesByServiceId } from "../../providers/detail";
 import { getCookie } from "../../utils/cookieHelper";
-import { createEvent } from "../../providers/create";
+import { createEvent, updateEvent } from "../../providers/create";
 import CustomCalendar from "../CustomCalendar";
 import dayjs from 'dayjs';
+import { PrimaryColor, PrimaryThemeColor } from "../../utils/constant";
 
-const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appointment' }) => {
+const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appointment', appointment = {} }) => {
     const { showAlert } = useAlert();
     const [doctors, setDoctors] = useState([]);
     const [services, setServices] = useState([]);
@@ -33,6 +34,16 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
 
         fetchServices();       
     }, []);
+
+    useEffect(() => {
+        const updateServiceData = () => {
+            if (appointment.id) {
+                setAppointmentData(appointment);
+            }
+        }
+
+        updateServiceData()
+    }, [appointment]);
 
   const doctorsList = useMemo(() => {
     return doctors.map((doctor) => ({
@@ -83,23 +94,36 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
     }
 
     try {
-        const data = {
-            user_id: getCookie( 'user_id'),
-            doctor_id: appointmentData.doctor.id,
-            service_id: appointmentData.service.id,
-            event_date: appointmentData.event_date,
-            type: 'appointment'
-        }
-      await createEvent(data);
-      !isPopup && onClose();
-      setLoadList(true);
-      setAppointmentData({
-        doctor: null,
-        service: null,
-        event_date: null,
-      });
-      onClose();
-      showAlert(`${title} added successfully`, 'success');
+      const data = {
+          user_id: getCookie( 'user_id'),
+          doctor_id: appointmentData.doctor.id,
+          service_id: appointmentData.service.id,
+          event_date: appointmentData.event_date,
+          type: 'appointment'
+      }
+
+      let updateRes;
+
+      if (appointment.id) {
+        updateRes = await updateEvent(appointment.id, data);
+      } else {
+        updateRes = await createEvent(data);
+      }
+
+      if (updateRes.status === 200 || updateRes.status === 201) {
+        showAlert(updateRes.status === 200 ? 'Appointment updated successfully' : 'Appointment added successfully', 'success');
+        onClose();
+        setLoadList(true);
+        setAppointmentData({
+          doctor: null,
+          service: null,
+          event_date: null,
+        });
+        onClose();
+        showAlert(`${title} added successfully`, 'success');
+      } else {
+        showAlert('Something went wrong', 'error')
+      }
     } catch (err) {
       showAlert(err.message, 'error');
     }
@@ -141,10 +165,10 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-        <Button variant="contained" type="submit">
+        <Button variant="contained" sx={{ ...PrimaryThemeColor }} type="submit">
           Save
         </Button>
-        {!isPopup && <Button variant="outlined" onClick={onClose}>
+        {!isPopup && <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={onClose}>
           Cancel
         </Button>}
       </Box>

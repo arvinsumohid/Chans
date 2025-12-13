@@ -1,25 +1,17 @@
-import React from 'react'
+import React, { lazy } from 'react'
 import { Box, Button } from '@mui/material'
-import DoctorsPopup from '../../components/popup/DoctorsPopup'
+import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant'
+const DoctorsPopup = lazy(() => import('../../components/popup/DoctorsPopup'))
+const EditServicePopup = lazy(() => import('../../components/popup/EditServicePopup'))
 
-const ActionButtons = ({ id, setLoadList }) => {
-    const [open, setOpen] = React.useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setLoadList(true);
-    };
+const ActionButtons = ({ id, onAddDoctor, onEditService }) => {
 
   return (
     <>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <Button color="success" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleOpen(id)}>Add Doctors</Button>
+        <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditService(id)}>Edit Service</Button>
+        <Button color="success" variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} size="small" onClick={() => onAddDoctor(id)}>Add Doctors</Button>
       </Box>
-      <DoctorsPopup open={open} handleClose={handleClose} id={id} />
     </>
   )
 }

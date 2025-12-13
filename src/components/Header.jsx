@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { getCookie } from '../utils/cookieHelper';
+import { PrimaryThemeColor } from '../utils/constant';
 
 const Header = ({ onMenuClick }) => {
   const theme = useTheme();
@@ -9,7 +10,7 @@ const Header = ({ onMenuClick }) => {
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar>
+      <Toolbar sx={{ ...PrimaryThemeColor }}>
         {isMobile && (
           <IconButton
             color="inherit"
