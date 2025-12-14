@@ -1,5 +1,5 @@
 import React, { lazy, useState } from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, useTheme, useMediaQuery, Button } from '@mui/material';
+import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Divider, useTheme, useMediaQuery, Button } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { logout } from '../providers/auth';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -10,6 +10,7 @@ import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import PeopleIcon from '@mui/icons-material/People';
 import { getCookie } from '../utils/cookieHelper';
+import { MenuHoverColor, MenuActiveColor, SecondaryColor } from '../utils/constant';
 
 const ConfirmationPopup = lazy(() => import('../components/popup/ConfirmationPopup'))
 
@@ -62,41 +63,50 @@ const SideMenu = ({ open, onClose }) => {
           {menuItems.map((item) => {
             if (item.access === getCookie('user_role') || item.access === 'all') 
               return (
-                <ListItem
+                <ListItemButton
                   button={Button}
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
                   selected={location.pathname === item.path}
                   sx={{
                     '&.Mui-selected': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                      backgroundColor: MenuActiveColor,
                       '&:hover': {
-                        backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                        backgroundColor: MenuHoverColor,
                       },
                     },
                   }}
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemIcon 
+                    sx={{
+                      '&.MuiListItemIcon-root': {
+                        color: SecondaryColor
+                      }
+                    }}>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
-                </ListItem>
+                </ListItemButton>
               )
           })}
-          <ListItem
+          <ListItemButton
             button={Button}
             key="logout"
             onClick={() => setOpenConfirmationPopup(true)}
             sx={{
               '&.Mui-selected': {
-                backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                backgroundColor: MenuActiveColor,
                 '&:hover': {
-                  backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                  backgroundColor: MenuHoverColor,
                 },
               },
             }}
           >
-            <ListItemIcon><LogoutIcon /></ListItemIcon>
+            <ListItemIcon sx={{
+                '&.MuiListItemIcon-root': {
+                  color: SecondaryColor
+                }
+              }}><LogoutIcon /></ListItemIcon>
             <ListItemText primary="Logout" />
-          </ListItem>
+          </ListItemButton>
         </List>
       </Drawer>
       <ConfirmationPopup

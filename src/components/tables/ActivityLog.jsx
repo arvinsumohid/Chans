@@ -8,6 +8,8 @@ import { AnnouncementColor, PrimaryColor } from '../../utils/constant';
 import { Typography, Box, Button } from '@mui/material';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAppointmentPopup from '../popup/EditAppointmentPopup';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     const { showAlert } = useAlert();
@@ -56,9 +58,9 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             { flex: 1, field: 'action', headerName: 'Action', renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}>Edit</Button>
+                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
                         <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
-                            <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}>Delete</Button>
+                            <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DeleteIcon /></Button>
                         </Activity>
                     </Box>
                 )
