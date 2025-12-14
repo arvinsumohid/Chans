@@ -4,13 +4,15 @@ import { getEventList } from '../../providers/list'
 import { useAlert } from '../../hooks/useAlert'
 import { LoadListContext } from '../../contexts/LoadListContext';
 import { getDate, getDateStatus } from '../../utils/util.helper';
-import { AnnouncementColor, PrimaryColor } from '../../utils/constant';
+import { AnnouncementColor, PrimaryColor, ViewColor } from '../../utils/constant';
 import { Typography, Box, Button } from '@mui/material';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAppointmentPopup from '../popup/EditAppointmentPopup';
+import ViewAppointmentPopup from '../popup/ViewAppointmentPopup';
 import { deleteAnnouncement } from '../../providers/delete';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     const { showAlert } = useAlert();
@@ -25,6 +27,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     });
     
     const [isEditAppointment, setIsEditAppointment] = useState(false);
+    const [isViewAppointment, setIsViewAppointment] = useState(false);
     const [idSelected, setIdSelected] = useState(null);
 
     const columnsByUserType = useMemo(() => {
@@ -59,6 +62,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             { flex: 1, field: 'action', headerName: 'Action', renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAppointment(params.row.event_id)}><VisibilityIcon /></Button>
                         <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
                         <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
                             <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DeleteIcon /></Button>
@@ -119,6 +123,16 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         }
     }
 
+    const onViewAppointment = (id) => {
+        setIdSelected(id);
+        setIsViewAppointment(true);
+    }
+
+    const handleViewAppointmentClose = () => {
+        setIsViewAppointment(false);
+        setLoadList(true);
+    }
+
     const onEditAppointment = (id) => {
         setIdSelected(id);
         setIsEditAppointment(true);
@@ -169,6 +183,9 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         />
         <Activity mode={isEditAppointment ? "visible" : "hidden"}>
             <EditAppointmentPopup open={isEditAppointment} handleClose={handleEditAppointmentClose} id={idSelected} />
+        </Activity>
+        <Activity mode={isViewAppointment ? "visible" : "hidden"}>
+            <ViewAppointmentPopup open={isViewAppointment} handleClose={handleViewAppointmentClose} id={idSelected} />
         </Activity>
     </>
   )

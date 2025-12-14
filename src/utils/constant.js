@@ -1,5 +1,5 @@
 
-import { green, red } from '@mui/material/colors';
+import { green, red, blue } from '@mui/material/colors';
 
 export const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },
@@ -15,6 +15,7 @@ export const TertiaryThemeColor = { backgroundColor: green[700], color: 'white',
 export const PrimaryColor = green[500]
 export const SecondaryColor = green[900]
 export const TertiaryColor = green[700]
+export const ViewColor = blue[500]
 export const AnnouncementColor = red[900]
 export const MenuActiveColor = green[50]
 export const MenuHoverColor = green[100]

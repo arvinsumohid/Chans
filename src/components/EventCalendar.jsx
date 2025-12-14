@@ -1,12 +1,18 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useMemo} from "react";
-import { Box, Typography } from "@mui/material";
+import { Activity, useMemo, useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
 import { getCookie } from "../utils/cookieHelper";
 import { TertiaryThemeColor, AnnouncementColor } from "../utils/constant";
+import ViewAppointmentPopup from "./popup/ViewAppointmentPopup";
+import ViewAnnouncementPopup from "./popup/ViewAnnouncementPopup";
 
 const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' }) => {
+  const [isViewAppointment, setIsViewAppointment] = useState(false);
+  const [isViewAnnouncement, setIsViewAnnouncement] = useState(false);
+  const [idSelected, setIdSelected] = useState(null);
+
   const appointmentData = useMemo(() => {
     return events.map((appointment) => {
       if (!appointment) return null;
@@ -44,36 +50,81 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
   //   );
   // });
 
-  return (
-    <Box sx={{ p: 2 }}>
-      {/* Calendar */}
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        dayMaxEvents={3}
-        events={appointmentData.map((evt) => ({
-          title: evt.title,
-          start: evt.start_date,
-          backgroundColor: evt.color,
-        }))}
-        datesSet={(info) => {
-          const from = info.start;
-          const to = info.end;
+  const onViewAppointment = (id) => {
+      setIdSelected(id);
+      setIsViewAppointment(true);
+  }
 
-          fetchEventsForMonth(from, to, eventType);
-        }}
-        eventContent={(arg) => {
-          return (
-            <Typography
-              variant="body2"
-              sx={{ backgroundColor: arg.event.backgroundColor }}
-              className={`capitalize w-full overflow-hidden text-white`}
-              title={arg.event.title}
-            >{arg.event.title}</Typography>
-          )
-        }}
-      />
-    </Box>
+  const handleViewAppointmentClose = () => {
+      setIsViewAppointment(false);
+      setLoadList(true);
+  }
+
+  const onViewAnnouncement = (id) => {
+      setIdSelected(id);
+      setIsViewAnnouncement(true);
+  }
+
+  const handleViewAnnouncementClose = () => {
+      setIsViewAnnouncement(false);
+      setLoadList(true);
+  }
+
+  return (
+    <>
+      <Box sx={{ p: 2 }}>
+        {/* Calendar */}
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          dayMaxEvents={3}
+          events={appointmentData.map((evt) => ({
+            id: evt.id,
+            title: evt.title,
+            start: evt.start_date,
+            backgroundColor: evt.color,
+            eventType: evt.event_type
+          }))}
+          datesSet={(info) => {
+            const from = info.start;
+            const to = info.end;
+
+            fetchEventsForMonth(from, to, eventType);
+          }}
+          eventContent={(arg) => {
+            return (
+              <Button
+                disableElevation
+                disableRipple
+                fullWidth
+                className="text-left"
+                sx={{ backgroundColor: arg.event.backgroundColor, padding: 0, borderRadius: 0, margin: 0 }}
+                onClick={() => {
+                  const eventType = arg.event.extendedProps.eventType;
+                  if (eventType === 'appointment') {
+                    onViewAppointment(arg.event.id);
+                  } else {
+                    onViewAnnouncement(arg.event.id);
+                  }
+                }}>
+                <Typography
+                  variant="body2"
+                  className={`capitalize w-full overflow-hidden text-white px-1`}
+                  title={arg.event.title}
+                >{arg.event.title}</Typography>
+              </Button>
+            )
+          }}
+        />
+      </Box>
+
+      <Activity mode={isViewAnnouncement ? "visible" : "hidden"}>
+          <ViewAnnouncementPopup open={isViewAnnouncement} handleClose={handleViewAnnouncementClose} id={idSelected} />
+      </Activity>
+      <Activity mode={isViewAppointment ? "visible" : "hidden"}>
+          <ViewAppointmentPopup open={isViewAppointment} handleClose={handleViewAppointmentClose} id={idSelected} />
+      </Activity>
+    </>
   );
 }
 

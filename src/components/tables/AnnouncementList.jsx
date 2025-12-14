@@ -4,13 +4,15 @@ import { getEventList } from '../../providers/list'
 import { useAlert } from '../../hooks/useAlert'
 import { LoadListContext } from '../../contexts/LoadListContext';
 import { Box, Button, Typography } from '@mui/material';
-import { PrimaryColor, AnnouncementColor } from '../../utils/constant';
+import { PrimaryColor, AnnouncementColor, ViewColor } from '../../utils/constant';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAnnouncementPopup from '../popup/EditAnnouncementPopup';
+import ViewAnnouncementPopup from '../popup/ViewAnnouncementPopup';
 import { deleteAnnouncement } from '../../providers/delete';
 import { getDateStatus } from '../../utils/util.helper';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const AnnouncementList = ({ userType = 'admin' }) => {
     const { showAlert } = useAlert();
@@ -24,7 +26,18 @@ const AnnouncementList = ({ userType = 'admin' }) => {
         pageSize: 10,
     });
     const [isEditAnnouncement, setIsEditAnnouncement] = useState(false);
+    const [isViewAnnouncement, setIsViewAnnouncement] = useState(false);
     const [idSelected, setIdSelected] = useState(null);
+
+    const onViewAnnouncement = (id) => {
+        setIdSelected(id);
+        setIsViewAnnouncement(true);
+    }
+
+    const handleViewAnnouncementClose = () => {
+        setIsViewAnnouncement(false);
+        setLoadList(true);
+    }
 
     const onEditAnnouncement = (id) => {
         setIdSelected(id);
@@ -77,6 +90,7 @@ const AnnouncementList = ({ userType = 'admin' }) => {
             { flex: 1, field: 'action', headerName: 'Action', renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAnnouncement(params.row.event_id)}><VisibilityIcon /></Button>
                         <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAnnouncement(params.row.event_id)}><EditIcon /></Button>
                         <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAnnouncement(params.row.event_id)}><DeleteIcon /></Button>
                     </Box>
@@ -157,6 +171,9 @@ const AnnouncementList = ({ userType = 'admin' }) => {
         />
         <Activity mode={isEditAnnouncement ? "visible" : "hidden"}>
             <EditAnnouncementPopup open={isEditAnnouncement} handleClose={handleEditAnnouncementClose} id={idSelected} />
+        </Activity>
+        <Activity mode={isViewAnnouncement ? "visible" : "hidden"}>
+            <ViewAnnouncementPopup open={isViewAnnouncement} handleClose={handleViewAnnouncementClose} id={idSelected} />
         </Activity>
     </>
   )
