@@ -26,7 +26,7 @@ const Header = ({ onMenuClick }) => {
           <img src="rhu-logo.png" alt="RHU logo" />
         </Box>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Chans
+          CHANS
         </Typography>
         <Box>
             <Box>
