@@ -8,6 +8,7 @@ import { AnnouncementColor, PrimaryColor } from '../../utils/constant';
 import { Typography, Box, Button } from '@mui/material';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAppointmentPopup from '../popup/EditAppointmentPopup';
+import { deleteAnnouncement } from '../../providers/delete';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -128,8 +129,16 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         setLoadList(true);
     }
 
-    const onDeleteAppointment = (id) => {
-        setIdSelected(id);
+    const onDeleteAppointment = async (id) => {
+        try {
+            const res = await deleteAnnouncement(id);
+            if (res.status === 200) {
+                showAlert('Appointment deleted successfully', 'success');
+                setLoadList(true);
+            }
+        } catch (error) {
+            showAlert(error.message, 'error');
+        }
     }
 
   return (
