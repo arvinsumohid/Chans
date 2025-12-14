@@ -4,7 +4,7 @@ import { Box, Button, Link, TextField, Typography } from '@mui/material'
 import { useAlert } from '../../hooks/useAlert';
 import { login } from '../../providers/auth';
 
-import { PrimaryThemeColor } from '../../utils/constant';
+import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant';
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -84,7 +84,7 @@ const LoginForm = () => {
             Login
         </Button>
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-            <Typography variant="body1">Don't have an account? <Link sx={{ textDecoration: 'none', fontWeight: 'bold' }} href="/register">Sign Up</Link></Typography>
+            <Typography variant="body1">Don't have an account? <Link sx={{ color: PrimaryColor, textDecoration: 'none', fontWeight: 'bold' }} href="/register">Sign Up</Link></Typography>
         </Box>
     </Box>
   )
