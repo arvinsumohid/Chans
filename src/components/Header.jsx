@@ -22,6 +22,9 @@ const Header = ({ onMenuClick }) => {
             <MenuIcon />
           </IconButton>
         )}
+        <Box className="mx-auto md:mr-4 mr-2 md:w-13 w-11">
+          <img src="rhu-logo.png" alt="RHU logo" />
+        </Box>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Chans
         </Typography>

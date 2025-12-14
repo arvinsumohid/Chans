@@ -46,7 +46,10 @@ const LoginForm = () => {
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
-        <Box className="text-center">
+        <Box className="text-center space-y-4">
+            <Box className="mx-auto w-50">
+                <img src="rhu-logo.png" alt="RHU logo" />
+            </Box>
             <Typography sx={{ fontSize: '2rem', fontWeight: '500' }} variant="h1">Welcome to RHU Villanueva</Typography>
         </Box>
         <Box sx={{ mt: 2 }}>
