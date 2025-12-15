@@ -33,7 +33,7 @@ const ServiceList = ({ loadList, setLoadList }) => {
 
     const dropDownOptions = [
         { label: 'Name', value: 'name' },
-        { label: 'Medical professional', value: 'doctor' },
+        { label: 'Medical personnel', value: 'doctor' },
     ];
 
     const columns = [
@@ -42,12 +42,12 @@ const ServiceList = ({ loadList, setLoadList }) => {
         {
             flex: 1,
             field: 'doctor_services',
-            headerName: 'Medical professionals',
+            headerName: 'Medical personnels',
             sortable: false,
             renderCell: (params) => {
                 const services = params.row.doctor_services || [];
 
-                if (!services.length) return <span className="text-red-500 capitalize">No medical professional</span>;
+                if (!services.length) return <span className="text-red-500 capitalize">No medical personnel</span>;
                 return (
                     <List sx={{ padding: 0 }}>
                         {services.map((service) => (
@@ -74,7 +74,7 @@ const ServiceList = ({ loadList, setLoadList }) => {
                         return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
                 }},
         { flex: 1, field: 'actions', headerName: 'Actions', renderCell: (params) => (
-            <ActionButtons id={params.row.id} iconOnly addText="Select medical professionals" editText="Edit" onAdd={onAddDoctor} onEdit={onEditService}/>
+            <ActionButtons id={params.row.id} iconOnly addText="Select medical personnels" editText="Edit" onAdd={onAddDoctor} onEdit={onEditService}/>
         )},
     ];
 

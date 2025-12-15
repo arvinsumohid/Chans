@@ -51,7 +51,7 @@ const DoctorForm = ({ onClose, setLoadList, isPopup = false, doctor = {} }) => {
         }
 
         if (updateRes.status === 200 || updateRes.status === 201) {
-            showAlert(updateRes.status === 200 ? 'Medical professional updated successfully' : 'Medical professional added successfully', 'success');
+            showAlert(updateRes.status === 200 ? 'Medical personnel updated successfully' : 'Medical personnel added successfully', 'success');
             onClose();
             setLoadList(true);
         } else {
@@ -67,14 +67,14 @@ const DoctorForm = ({ onClose, setLoadList, isPopup = false, doctor = {} }) => {
         if (!doctorData.description.trim()) newErrors.description = 'Description is required';
         
         setErrors(newErrors);
-        showAlert(Object.keys(newErrors).length === 0 ? 'Medical professional added successfully' : 'Please fill all required fields', Object.keys(newErrors).length === 0 ? 'success' : 'error');
+        showAlert(Object.keys(newErrors).length === 0 ? 'Medical personnel added successfully' : 'Please fill all required fields', Object.keys(newErrors).length === 0 ? 'success' : 'error');
         return Object.keys(newErrors).length === 0;
     };
 
     return (
         <Card variant="outlined" className="max-w-[600px] p-4" component="form" onSubmit={handleSubmit}>
             <Typography variant="h6" gutterBottom>
-                Add medical professional
+                Add medical personnel
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
                 <TextField

@@ -48,7 +48,7 @@ const ViewAppointmentPopup = ({ open, handleClose, id }) => {
                     <Typography variant="body2">{appointment.service?.label}</Typography>
                 </Box>
                 <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 700 }}>Medical Professional</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 700 }}>Medical personnel</Typography>
                     <Typography variant="body2">{appointment.doctor?.label}</Typography>
                 </Box>
                 <Box>

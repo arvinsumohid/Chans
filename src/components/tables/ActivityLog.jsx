@@ -32,7 +32,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
     const columnsByUserType = useMemo(() => {
         const columns = [
-            { flex: 1, field: 'doctor', headerName: 'Medical professional', renderCell: (params) => {
+            { flex: 1, field: 'doctor', headerName: 'Medical personnel', renderCell: (params) => {
                 return <span className="capitalize">Dr. {params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
             }},
             { flex: 1, field: 'service', headerName: 'Service', renderCell: (params) => {
@@ -86,7 +86,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     }, [userType]);
 
     const dropDownOptions = [
-        { label: 'Medical professional', value: 'doctor' },
+        { label: 'Medical personnel', value: 'doctor' },
         { label: 'Service', value: 'service_name' },
         { label: 'User', value: 'user' },
     ]

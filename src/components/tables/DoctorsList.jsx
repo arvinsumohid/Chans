@@ -135,7 +135,7 @@ const DoctorsList = ({ loadList, setLoadList }) => {
         <>
             <Box>
                 <Typography variant="h6">
-                    Medical professionals
+                    Medical personnels
                 </Typography>
             </Box>
             <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} showDateRange={false} />

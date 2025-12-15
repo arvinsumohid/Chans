@@ -17,7 +17,7 @@ const DoctorsPopup = ({ open, handleClose, id }) => {
         fullWidth
         maxWidth="sm"
     >  
-        <DialogTitle>Medical professional</DialogTitle>
+        <DialogTitle>Medical personnel</DialogTitle>
         <DialogContent >
             <DoctorForm setLoadList={setLoadList} isPopup={true}/>
             <DoctorListPopup loadList={loadList} setLoadList={setLoadList} id={id}/>
