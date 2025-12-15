@@ -44,12 +44,12 @@ const ViewAppointmentPopup = ({ open, handleClose, id }) => {
             <DialogTitle>Appointment</DialogTitle>
             <DialogContent className='space-y-4'>
                 <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 700 }}>Doctor</Typography>
-                    <Typography variant="body2">{appointment.doctor?.label}</Typography>
-                </Box>
-                <Box>
                     <Typography variant="body1" sx={{ fontWeight: 700 }}>Service</Typography>
                     <Typography variant="body2">{appointment.service?.label}</Typography>
+                </Box>
+                <Box>
+                    <Typography variant="body1" sx={{ fontWeight: 700 }}>Medical Professional</Typography>
+                    <Typography variant="body2">{appointment.doctor?.label}</Typography>
                 </Box>
                 <Box>
                     <Typography variant="body1" sx={{ fontWeight: 700 }}>Appointment Date</Typography>

@@ -5,7 +5,7 @@ import { useAlert } from '../../hooks/useAlert'
 import { LoadListContext } from '../../contexts/LoadListContext';
 import { getDate, getDateStatus } from '../../utils/util.helper';
 import { AnnouncementColor, PrimaryColor, ViewColor } from '../../utils/constant';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, Tooltip } from '@mui/material';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAppointmentPopup from '../popup/EditAppointmentPopup';
 import ViewAppointmentPopup from '../popup/ViewAppointmentPopup';
@@ -32,7 +32,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
     const columnsByUserType = useMemo(() => {
         const columns = [
-            { flex: 1, field: 'doctor', headerName: 'Doctor', renderCell: (params) => {
+            { flex: 1, field: 'doctor', headerName: 'Medical professional', renderCell: (params) => {
                 return <span className="capitalize">Dr. {params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
             }},
             { flex: 1, field: 'service', headerName: 'Service', renderCell: (params) => {
@@ -62,10 +62,16 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             { flex: 1, field: 'action', headerName: 'Action', renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAppointment(params.row.event_id)}><VisibilityIcon /></Button>
-                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
+                        <Tooltip title="View" arrow disableInteractive>
+                            <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAppointment(params.row.event_id)}><VisibilityIcon /></Button>
+                        </Tooltip>
+                        <Tooltip title="Edit" arrow disableInteractive>
+                            <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
+                        </Tooltip>
                         <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
-                            <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DeleteIcon /></Button>
+                            <Tooltip title="Delete" arrow disableInteractive>
+                                <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DeleteIcon /></Button>
+                            </Tooltip>
                         </Activity>
                     </Box>
                 )
@@ -80,7 +86,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     }, [userType]);
 
     const dropDownOptions = [
-        { label: 'Doctor', value: 'doctor' },
+        { label: 'Medical professional', value: 'doctor' },
         { label: 'Service', value: 'service_name' },
         { label: 'User', value: 'user' },
     ]

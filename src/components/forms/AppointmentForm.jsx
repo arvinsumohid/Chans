@@ -80,7 +80,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!appointmentData.doctor || !appointmentData.service) {
-      showAlert("Please select both doctor and service", 'error');
+      showAlert("Please select both medical professional and service", 'error');
       return;
     }
     if (!appointmentData.event_date) {
@@ -153,7 +153,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
           options={doctorsList}
           value={appointmentData.doctor}
           onChange={handleDoctorChange}
-          renderInput={(params) => <TextField {...params} label="Doctor" />}
+          renderInput={(params) => <TextField {...params} label="Medical professional" />}
         />
         <CustomCalendar
           value={appointmentData.event_date}

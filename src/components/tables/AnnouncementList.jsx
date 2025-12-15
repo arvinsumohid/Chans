@@ -3,7 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { getEventList } from '../../providers/list'
 import { useAlert } from '../../hooks/useAlert'
 import { LoadListContext } from '../../contexts/LoadListContext';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Tooltip, Typography } from '@mui/material';
 import { PrimaryColor, AnnouncementColor, ViewColor } from '../../utils/constant';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAnnouncementPopup from '../popup/EditAnnouncementPopup';
@@ -90,9 +90,15 @@ const AnnouncementList = ({ userType = 'admin' }) => {
             { flex: 1, field: 'action', headerName: 'Action', renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAnnouncement(params.row.event_id)}><VisibilityIcon /></Button>
-                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAnnouncement(params.row.event_id)}><EditIcon /></Button>
-                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAnnouncement(params.row.event_id)}><DeleteIcon /></Button>
+                        <Tooltip title="View" arrow disableInteractive>
+                            <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAnnouncement(params.row.event_id)}><VisibilityIcon /></Button>
+                        </Tooltip>
+                        <Tooltip title="Edit" arrow disableInteractive>
+                            <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAnnouncement(params.row.event_id)}><EditIcon /></Button>
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow disableInteractive>
+                            <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAnnouncement(params.row.event_id)}><DeleteIcon /></Button>
+                        </Tooltip>
                     </Box>
                 )
             }}

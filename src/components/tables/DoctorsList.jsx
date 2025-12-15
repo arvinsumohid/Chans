@@ -8,6 +8,7 @@ import { LoadListContext } from '../../contexts/LoadListContext';
 import ToolbarFilter from '../ToolbarFilter';
 import { getStatus } from '../../utils/util.helper';
 import { AnnouncementColor, PrimaryColor } from '../../utils/constant';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 
 const ServicesPopup = lazy(() => import('../popup/ServicesPopup'));
 const EditDoctorPopup = lazy(() => import('../popup/EditDoctorPopup'));
@@ -75,7 +76,7 @@ const DoctorsList = ({ loadList, setLoadList }) => {
                 return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
         }},
         { flex: 1, field: 'actions', headerName: 'Actions', renderCell: (params) => (
-            <ActionButtons id={params.row.id} addText='Add Service' editText='Edit Doctor' onAdd={onAddService} onEdit={onEditDoctor}/>
+            <ActionButtons id={params.row.id} iconOnly addText="Select services" editText="Edit" customAddIcon={<MedicalServicesIcon />} onAdd={onAddService} onEdit={onEditDoctor}/>
         )},
     ];
 
@@ -134,7 +135,7 @@ const DoctorsList = ({ loadList, setLoadList }) => {
         <>
             <Box>
                 <Typography variant="h6">
-                    Doctors
+                    Medical professionals
                 </Typography>
             </Box>
             <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} showDateRange={false} />

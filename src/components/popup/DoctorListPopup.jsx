@@ -92,7 +92,7 @@ const DoctorListPopup = ({ loadList, setLoadList, id }) => {
         <>
             <Box className="mb-2">
                 <Typography variant="h6">
-                    Services
+                    Medical professionals
                 </Typography>
             </Box>
             <Box className="mb-2">

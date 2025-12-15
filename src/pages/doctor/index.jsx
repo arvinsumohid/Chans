@@ -14,7 +14,7 @@ const DoctorPage = () => {
       <Box className="flex flex-col gap-4">
         <DoctorsList loadList={loadList} setLoadList={setLoadList} />
         <Box sx={{ mt: 2 }}>
-          <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={() => setIsAddDoctor(true)}>Add Doctor</Button>
+          <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={() => setIsAddDoctor(true)}>Add Medical professional</Button>
         </Box>
         {isAddDoctor && <DoctorForm setLoadList={setLoadList} onClose={() => setIsAddDoctor(false)} />}
       </Box>
