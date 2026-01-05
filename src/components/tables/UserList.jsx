@@ -6,6 +6,9 @@ import { getUsers } from '../../providers/list';
 import { LoadListContext } from '../../contexts/LoadListContext';
 import ToolbarFilter from '../ToolbarFilter';
 import { getDate } from '../../utils/util.helper';
+import Switch from '@mui/material/Switch';
+import { updateBHWStatus } from '../../providers/create';
+
 
 const UserList = ({ loadList, setLoadList }) => {
     const { loadList: editLoadList, setLoadList: editSetLoadList } = useContext(LoadListContext);
@@ -44,6 +47,15 @@ const UserList = ({ loadList, setLoadList }) => {
         { flex: 1, field: 'last_login', headerName: 'Last login', renderCell: (params) => (
             <Typography variant="body2" className="capitalize">{params.row.last_login_at ? getDate(params.row.last_login_at) : '—'}</Typography>
         )},
+        {flex: 1, field: 'is_bhw', headerName: 'BHW', renderCell: (params) => (
+            <Typography variant="body2">
+                <Switch
+                    checked={params.row.is_bhw}
+                    onChange={(event) => handleBHWStatusChange(params.row.id, event.target.checked)}
+                    inputProps={{ 'aria-label': 'BHW toggle' }}
+                />
+            </Typography>
+        )}
     ];
 
     useEffect(() => {
@@ -77,6 +89,16 @@ const UserList = ({ loadList, setLoadList }) => {
             setSearch('');
         }
     }
+
+    const handleBHWStatusChange = async (userId, isBHW) => {
+        try {
+            await updateBHWStatus(userId, isBHW);
+            setLoadList(true);
+            editSetLoadList(true);
+        } catch (err) {
+            showAlert(err.message, 'error');
+        }
+    };
 
     return (
         <>
