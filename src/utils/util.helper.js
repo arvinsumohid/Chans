@@ -1,5 +1,10 @@
 export const getDateStatus = (row) => {
     const currentDate = new Date();
+
+    if (row.event_deleted_at) {
+        return 'CANCELED';
+    }
+
     if (currentDate > new Date(row.event_date)) {
         return 'DONE';
     }

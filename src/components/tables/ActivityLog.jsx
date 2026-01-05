@@ -12,6 +12,7 @@ import ViewAppointmentPopup from '../popup/ViewAppointmentPopup';
 import { deleteAnnouncement } from '../../providers/delete';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
@@ -33,7 +34,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     const columnsByUserType = useMemo(() => {
         const columns = [
             { flex: 1, field: 'doctor', headerName: 'Medical personnel', renderCell: (params) => {
-                return <span className="capitalize">Dr. {params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
+                return <span className="capitalize">{params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
             }},
             { flex: 1, field: 'service', headerName: 'Service', renderCell: (params) => {
                 return <span className="capitalize">{params.row.service_name}</span>;
@@ -51,7 +52,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
                     textTransform: 'uppercase',
                 };
 
-                if (status === 'DONE') {
+                if (status === 'DONE' || status === 'CANCELED') {
                     sx.color = AnnouncementColor;
                 } else {
                     sx.color = PrimaryColor;
@@ -65,22 +66,28 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
                         <Tooltip title="View" arrow disableInteractive>
                             <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAppointment(params.row.event_id)}><VisibilityIcon /></Button>
                         </Tooltip>
-                        <Tooltip title="Edit" arrow disableInteractive>
-                            <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
-                        </Tooltip>
-                        <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
-                            <Tooltip title="Delete" arrow disableInteractive>
-                                <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DeleteIcon /></Button>
-                            </Tooltip>
-                        </Activity>
+                        {!params.row.event_deleted_at && (
+                            <>
+                                {userType !== 'admin' && (
+                                    <Tooltip title="Edit" arrow disableInteractive>
+                                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
+                                    </Tooltip>
+                                )}
+                                <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
+                                    <Tooltip title="Cancel" arrow disableInteractive>
+                                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DoDisturbIcon /></Button>
+                                    </Tooltip>
+                                </Activity>
+                            </>
+                        )}
                     </Box>
                 )
             }}
         ];
 
-        if (userType === 'admin') {
-            return columns.filter((col) => col.field !== 'action');
-        }
+        // if (userType === 'admin') {
+        //     return columns.filter((col) => col.field !== 'action');
+        // }
         
         return columns.filter((col) => col.field !== 'user');
     }, [userType]);

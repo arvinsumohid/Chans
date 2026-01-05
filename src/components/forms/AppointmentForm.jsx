@@ -147,6 +147,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
           value={appointmentData.service}
           onChange={handleServiceChange}
           renderInput={(params) => <TextField {...params} label="Service" />}
+          disabled={!!appointment.id}
         />
         <Autocomplete
           fullWidth
@@ -154,6 +155,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
           value={appointmentData.doctor}
           onChange={handleDoctorChange}
           renderInput={(params) => <TextField {...params} label="Medical personnel" />}
+          disabled={!!appointment.id}
         />
         <CustomCalendar
           value={appointmentData.event_date}
