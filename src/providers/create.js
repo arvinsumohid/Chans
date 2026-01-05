@@ -50,3 +50,9 @@ export const updateEvent = async (id, eventData) => {
 
     return data;
 }
+
+export const updateBHWStatus = async (userId, isBHW) => {
+    const data = await tryCatch(() => axiosInstance.put(`/users/${userId}/bhw`, { is_bhw: isBHW }));
+
+    return data;
+}
