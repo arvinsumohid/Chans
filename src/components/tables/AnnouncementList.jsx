@@ -79,7 +79,7 @@ const AnnouncementList = ({ userType = 'admin' }) => {
                     textTransform: 'uppercase',
                 };
 
-                if (status === 'DONE') {
+                if (status === 'DONE' || status === 'CANCELED') {
                     sx.color = AnnouncementColor;
                 } else {
                     sx.color = PrimaryColor;
@@ -93,12 +93,16 @@ const AnnouncementList = ({ userType = 'admin' }) => {
                         <Tooltip title="View" arrow disableInteractive>
                             <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAnnouncement(params.row.event_id)}><VisibilityIcon /></Button>
                         </Tooltip>
-                        <Tooltip title="Edit" arrow disableInteractive>
-                            <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAnnouncement(params.row.event_id)}><EditIcon /></Button>
-                        </Tooltip>
-                        <Tooltip title="Delete" arrow disableInteractive>
-                            <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAnnouncement(params.row.event_id)}><DeleteIcon /></Button>
-                        </Tooltip>
+                        {!params.row.event_deleted_at && (
+                            <>
+                                <Tooltip title="Edit" arrow disableInteractive>
+                                    <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAnnouncement(params.row.event_id)}><EditIcon /></Button>
+                                </Tooltip>
+                                <Tooltip title="Delete" arrow disableInteractive>
+                                    <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAnnouncement(params.row.event_id)}><DeleteIcon /></Button>
+                                </Tooltip>
+                            </>
+                        )}
                     </Box>
                 )
             }}

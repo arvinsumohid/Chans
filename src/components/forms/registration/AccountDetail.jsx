@@ -154,7 +154,16 @@ const AccountDetail = ({ formData, setFormData, handleChange, errors }) => {
             <MuiTelInput
                 name="phone_number"
                 value={formData.phone_number}
-                onChange={handleChange}
+                onChange={(value) => {
+                    // Remove all whitespace from the phone number
+                    const cleanValue = value.replace(/\s+/g, '');
+                    handleChange({
+                        target: {
+                            name: 'phone_number',
+                            value: cleanValue
+                        }
+                    });
+                }}
                 defaultCountry="PH"
                 fullWidth
                 disableDropdown
