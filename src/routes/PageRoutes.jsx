@@ -20,7 +20,7 @@ const PageRoutes = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/" element={<DashboardPage />} />
             <Route path="/users" element={<UserPage />} />
-            <Route path="/doctors" element={<DoctorPage />} />
+            <Route path="/medical-personnels" element={<DoctorPage />} />
             <Route path="/services" element={<ServicePage />} />
             <Route path="/appointments" element={<AppointmentPage />} />
             <Route path="/announcement" element={<AnnouncementPage />} />
