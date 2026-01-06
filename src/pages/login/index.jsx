@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import LoginForm from '../../components/forms/LoginForm'
-import PublicRoute from '../../routes/Publicroute';
+import PublicRoute from '../../routes/PublicRoute';
 
 const LoginPage = () => {
   return (
