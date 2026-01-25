@@ -1,5 +1,5 @@
 import { lazy } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 const LoginPage = lazy(() => import('../pages/login'))
 const RegisterPage = lazy(() => import('../pages/register'))
@@ -10,8 +10,10 @@ const ServicePage = lazy(() => import('../pages/service'))
 const AppointmentPage = lazy(() => import('../pages/appointment'))
 const AnnouncementPage = lazy(() => import('../pages/announcement'))
 import { AlertProvider } from '../contexts/AlertContext'; 
+import { getCookie } from '../utils/cookieHelper';
 
 const PageRoutes = () => {
+    const isAuthenticated = !!getCookie("access_token");
   return (
       <BrowserRouter>
         <AlertProvider>
@@ -24,6 +26,14 @@ const PageRoutes = () => {
             <Route path="/services" element={<ServicePage />} />
             <Route path="/appointments" element={<AppointmentPage />} />
             <Route path="/announcement" element={<AnnouncementPage />} />
+            <Route
+              path="*"
+              element={
+                isAuthenticated
+                  ? <Navigate to="/" replace />
+                  : <Navigate to="/login" replace />
+              }
+            />
           </Routes>
         </AlertProvider>
       </BrowserRouter>

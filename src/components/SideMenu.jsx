@@ -19,7 +19,7 @@ const menuItems = [
   { text: 'Announcement', path: '/announcement', icon: <AnnouncementIcon />, access: 'all' },
   { text: 'Appointments', path: '/appointments', icon: <BookOnlineIcon />, access: 'all' },
   { text: 'Users', path: '/users', icon: <PeopleIcon />, access: 'admin' },
-  { text: 'Medical Personnels', path: '/medical-personnels', icon: <MedicationIcon />, access: 'admin' },
+  { text: 'Medical Personnel', path: '/medical-personnels', icon: <MedicationIcon />, access: 'admin' },
   { text: 'Services', path: '/services', icon: <VaccinesIcon />, access: 'admin' },
 ];
 

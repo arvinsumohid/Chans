@@ -7,7 +7,7 @@ import DateRangePicker from './DateRange';
 const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
     const [filter, setFilter] = useState({
         search: '',
-        field: '',
+        field: 'all',
         from: '',
         to: '',
     })
@@ -22,19 +22,16 @@ const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
         onSearch(filter.search, filter.field, from, to);
     }
 
-     useEffect(() => {
-        if (debouncedQuery) {
-            handleSearch();
-        }
+    useEffect(() => {
+        handleSearch();
     }, [debouncedQuery, filter.field]);
 
-    const handleChange = (event) => {
-        setFilter((v) => ({...v, field: event.target.value}));
-    };
+    // const handleChangeField = (event) => {
+    //     setFilter((v) => ({...v, field: event.target.value}));
+    // };
 
-    const handleReset = () => {
-        setFilter((v) => ({...v, search: '', field: ''}));
-        handleSearch();
+    const handleChangeSearch = (event) => {
+        setFilter((v) => ({...v, search: event.target.value}));
     };
 
   return (
@@ -50,25 +47,27 @@ const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
                     sx={{
                         marginY: 0
                     }}
-                    onChange={(e) => setFilter((v) =>({...v, search: e.target.value}))}
+                    onChange={handleChangeSearch}
                 />
-                <FormControl className="w-1/2 md:w-1/4 max-w-[150px]">
+                {/* <FormControl className="w-1/2 md:w-1/4 max-w-[150px]">
                     <InputLabel id="demo-simple-select-label">Field</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={filter.field}
                         label="Field*"
-                        onChange={handleChange}
+                        onChange={handleChangeField}
                     >
+                        <MenuItem key="all" value="all">
+                            All
+                        </MenuItem>
                         {dropDownOptions.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                             </MenuItem>
                         ))}
                     </Select>
-                </FormControl>
-                <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={handleReset}>Reset</Button>
+                </FormControl> */}
             </Box>
             
             <Activity mode={showDateRange ? 'visible' : 'hidden'}>

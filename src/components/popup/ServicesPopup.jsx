@@ -19,7 +19,6 @@ const ServicesPopup = ({ open, handleClose, id }) => {
     >  
         <DialogTitle>Services</DialogTitle>
         <DialogContent >
-            <ServiceForm setLoadList={setLoadList} isPopup={true}/>
             <ServiceListPopup loadList={loadList} setLoadList={setLoadList} id={id}/>
         </DialogContent>
         <DialogActions>
