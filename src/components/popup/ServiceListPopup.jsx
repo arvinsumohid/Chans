@@ -91,11 +91,6 @@ const ServiceListPopup = ({ loadList, setLoadList, id }) => {
     return (
         <>
             <Box className="mb-2">
-                <Typography variant="h6">
-                    Services
-                </Typography>
-            </Box>
-            <Box className="mb-2">
                 <TextField label="Search" variant="outlined" onChange={handleSearch} size="small" />
             </Box>
             <Paper sx={{ width: '100%' }}>

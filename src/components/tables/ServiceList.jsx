@@ -60,19 +60,20 @@ const ServiceList = ({ loadList, setLoadList }) => {
             },
         },
         { flex: 1, field: 'is_active', headerName: 'Status', renderCell: (params) => {
-                        const status = getStatus(params.row);
-                        const sx = {
-                            textTransform: 'uppercase',
-                        };
-        
-                        if (status === 'INACTIVE') {
-                            sx.color = AnnouncementColor;
-                        } else {
-                            sx.color = PrimaryColor;
-                        }
-        
-                        return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
-                }},
+                const status = getStatus(params.row);
+                const sx = {
+                    textTransform: 'uppercase',
+                };
+                const services = params.row.doctor_services || [];
+
+                if (status === 'INACTIVE' || !services.length) {
+                    sx.color = AnnouncementColor;
+                } else {
+                    sx.color = PrimaryColor;
+                }
+
+                return <Typography variant="body2" sx={sx} className="capitalize">{!services.length ? 'INACTIVE' : status}</Typography>;
+            }},
         { flex: 1, field: 'actions', headerName: 'Actions', renderCell: (params) => (
             <ActionButtons id={params.row.id} iconOnly addText="Select medical personnels" editText="Edit" onAdd={onAddDoctor} onEdit={onEditService}/>
         )},

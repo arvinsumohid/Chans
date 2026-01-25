@@ -21,6 +21,10 @@ const CustomCalendar = ({ onChange, label, name, errors, value }) => {
         onChange={onChange}
         value={value ? dayjs(value) : null}
         minDate={dayjs()}
+        shouldDisableDate={(date) => {
+          const day = date.day(); // 0 = Sunday, 6 = Saturday
+          return day === 0 || day === 6;
+        }}
         slotProps={{
           textField: {
             size: 'small',

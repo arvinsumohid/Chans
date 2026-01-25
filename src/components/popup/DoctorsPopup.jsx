@@ -19,7 +19,6 @@ const DoctorsPopup = ({ open, handleClose, id }) => {
     >  
         <DialogTitle>Medical personnel</DialogTitle>
         <DialogContent >
-            <DoctorForm setLoadList={setLoadList} isPopup={true}/>
             <DoctorListPopup loadList={loadList} setLoadList={setLoadList} id={id}/>
         </DialogContent>
         <DialogActions>

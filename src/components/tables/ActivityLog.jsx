@@ -33,14 +33,14 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
     const columnsByUserType = useMemo(() => {
         const columns = [
+            { flex: 1, field: 'user', headerName: 'Requested By', renderCell: (params) => {
+                return <span className="capitalize">{params.row.user_lastname}, {params.row.user_firstname}</span>;
+            } },
             { flex: 1, field: 'doctor', headerName: 'Medical personnel', renderCell: (params) => {
                 return <span className="capitalize">{params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
             }},
             { flex: 1, field: 'service', headerName: 'Service', renderCell: (params) => {
                 return <span className="capitalize">{params.row.service_name}</span>;
-            } },
-            { flex: 1, field: 'user', headerName: 'User', renderCell: (params) => {
-                return <span className="capitalize">{params.row.user_gender === "male" ? "Mr." : "Ms."} {params.row.user_lastname}, {params.row.user_firstname}</span>;
             } },
             { flex: 1, field: 'event_date', headerName: 'Appointment Date', renderCell: (params) => {
                 const date = getDate(params.row.event_date);
@@ -88,8 +88,12 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         // if (userType === 'admin') {
         //     return columns.filter((col) => col.field !== 'action');
         // }
+
+        if (userType !== 'admin') {
+            return columns.filter((col) => col.field !== 'user');
+        }
         
-        return columns.filter((col) => col.field !== 'user');
+        return columns;
     }, [userType]);
 
     const dropDownOptions = [
