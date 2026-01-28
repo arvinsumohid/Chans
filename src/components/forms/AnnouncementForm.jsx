@@ -114,6 +114,7 @@ const AnnouncementForm = ({ onClose, setLoadList, isPopup = false, title = 'Anno
           label="Date"
           name="event_date"
           errors={[]}
+          enableWeekend={title === 'Announcement'}
         />
       </Box>
 

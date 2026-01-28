@@ -11,7 +11,7 @@ dayjs.extend(timezone);
 // set default timezone to Manila
 dayjs.tz.setDefault('Asia/Manila');
 
-const CustomCalendar = ({ onChange, label, name, errors, value }) => {
+const CustomCalendar = ({ onChange, label, name, errors, value, enableWeekend = false }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} dateLibInstance={dayjs}>
       <DatePicker
@@ -23,7 +23,7 @@ const CustomCalendar = ({ onChange, label, name, errors, value }) => {
         minDate={dayjs()}
         shouldDisableDate={(date) => {
           const day = date.day(); // 0 = Sunday, 6 = Saturday
-          return day === 0 || day === 6;
+          return !enableWeekend && (day === 0 || day === 6);
         }}
         slotProps={{
           textField: {
