@@ -42,7 +42,7 @@ const ServiceList = ({ loadList, setLoadList }) => {
         {
             flex: 1,
             field: 'doctor_services',
-            headerName: 'Medical personnels',
+            headerName: 'Medical personnel',
             sortable: false,
             renderCell: (params) => {
                 const services = params.row.doctor_services || [];
@@ -75,7 +75,7 @@ const ServiceList = ({ loadList, setLoadList }) => {
                 return <Typography variant="body2" sx={sx} className="capitalize">{!services.length ? 'INACTIVE' : status}</Typography>;
             }},
         { flex: 1, field: 'actions', headerName: 'Actions', renderCell: (params) => (
-            <ActionButtons id={params.row.id} iconOnly addText="Select medical personnels" editText="Edit" onAdd={onAddDoctor} onEdit={onEditService}/>
+            <ActionButtons id={params.row.id} iconOnly addText="Select medical personnel" editText="Edit" onAdd={onAddDoctor} onEdit={onEditService}/>
         )},
     ];
 

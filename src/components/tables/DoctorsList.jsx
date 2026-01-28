@@ -66,14 +66,15 @@ const DoctorsList = ({ loadList, setLoadList }) => {
                 const sx = {
                     textTransform: 'uppercase',
                 };
+                const services = params.row.doctor_services || [];
 
-                if (status === 'INACTIVE') {
+                if (status === 'INACTIVE' || !services.length) {
                     sx.color = AnnouncementColor;
                 } else {
                     sx.color = PrimaryColor;
                 }
 
-                return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
+                return <Typography variant="body2" sx={sx} className="capitalize">{!services.length ? 'INACTIVE' : status}</Typography>;
         }},
         { flex: 1, field: 'actions', headerName: 'Actions', renderCell: (params) => (
             <ActionButtons id={params.row.id} iconOnly addText="Select services" editText="Edit" customAddIcon={<MedicalServicesIcon />} onAdd={onAddService} onEdit={onEditDoctor}/>
@@ -133,11 +134,6 @@ const DoctorsList = ({ loadList, setLoadList }) => {
 
     return (
         <>
-            <Box>
-                <Typography variant="h6">
-                    Medical personnels
-                </Typography>
-            </Box>
             <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} showDateRange={false} />
             <Paper sx={{ width: '100%' }}>
                 <DataGrid
