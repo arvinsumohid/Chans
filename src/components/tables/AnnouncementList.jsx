@@ -156,29 +156,31 @@ const AnnouncementList = ({ userType = 'admin' }) => {
   return (
     <>
         <ToolbarFilter onSearch={handleSearch} dropDownOptions={[{label: 'Title', value: 'announcement_name'}]} />
-        <DataGrid
-            disableColumnSorting
-            disableColumnMenu
-            rows={activityLogs}
-            columns={columnsByUserType}
-            getRowId={(row) => row.event_id}
-            getRowHeight={() => 'auto'}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            pageSizeOptions={[5, 10]}
-            sx={{ 
-                border: 0,
-                '& .MuiDataGrid-cell': {
-                    padding: '8px 16px',
-                    whiteSpace: 'normal',
-                    lineHeight: '1.5'
-                }
-            }}
-            loading={loadList}
-            paginationMode="server"
-            rowCount={totalItem}
-            disableRowSelectionOnClick
-        />
+        <Box sx={{ width: "100%", overflowX: "auto" }}>
+            <DataGrid
+                disableColumnSorting
+                disableColumnMenu
+                rows={activityLogs}
+                columns={columnsByUserType}
+                getRowId={(row) => row.event_id}
+                getRowHeight={() => 'auto'}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                pageSizeOptions={[5, 10]}
+                sx={{ 
+                    border: 0,
+                    '& .MuiDataGrid-cell': {
+                        padding: '8px 16px',
+                        whiteSpace: 'normal',
+                        lineHeight: '1.5'
+                    }
+                }}
+                loading={loadList}
+                paginationMode="server"
+                rowCount={totalItem}
+                disableRowSelectionOnClick
+            />
+        </Box>
         <Activity mode={isEditAnnouncement ? "visible" : "hidden"}>
             <EditAnnouncementPopup open={isEditAnnouncement} handleClose={handleEditAnnouncementClose} id={idSelected} />
         </Activity>
