@@ -47,7 +47,8 @@ const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
                     margin="normal"
                     value={filter.search}
                     sx={{
-                        marginY: 0
+                        marginY: 0,
+                        width: "100%"
                     }}
                     onChange={handleChangeSearch}
                 />

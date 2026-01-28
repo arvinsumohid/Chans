@@ -8,8 +8,11 @@ function DateRangePicker({ onSearch }) {
   const [startDate, endDate] = dateRange;
 
   return (
-    <Box className="flex gap-4 items-center">
+    <Box className="flex gap-4 items-center w-full">
       <DatePicker
+        sx={{
+          width: "100%"
+        }}
         selectsRange
         startDate={startDate}
         endDate={endDate}
@@ -29,7 +32,11 @@ function DateRangePicker({ onSearch }) {
         }}
         isClearable // ✅ shows reset "X" inside input
         placeholderText="Select date range"
-        customInput={<TextField label="Date Range" />}
+        customInput={<TextField label="Date Range" 
+                    sx={{
+                        marginY: 0,
+                        width: "100%"
+                    }}/>}
       />
     </Box>
   );
