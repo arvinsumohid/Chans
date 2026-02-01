@@ -24,3 +24,9 @@ export const getEventById = async (id) => {
 
     return data;
 }
+
+export const getEventsPdf = async (filter) => {
+    const data = await tryCatch(() => axiosInstance.get(`/events/export/pdf`, { params: filter, responseType: 'arraybuffer' }));
+
+    return data;
+}

@@ -32,7 +32,8 @@ function DateRangePicker({ onSearch }) {
         }}
         isClearable // ✅ shows reset "X" inside input
         placeholderText="Select date range"
-        customInput={<TextField label="Date Range" 
+        customInput={<TextField label="Date Range"
+                    autoComplete="off"
                     sx={{
                         marginY: 0,
                         width: "100%"
