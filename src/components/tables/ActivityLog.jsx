@@ -14,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { getEventsPdf } from '../../providers/detail';
 
 const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     const { showAlert } = useAlert();
@@ -172,9 +173,28 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         }
     }
 
+    const downloadPdf = async (from, to) => {
+    try {
+        const response = await getEventsPdf({ page: 1, size: 50, from, to, type: eventType });
+
+        // response.data is now a proper binary buffer
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "appointments.pdf";
+        a.click();
+
+        window.URL.revokeObjectURL(url); // clean up
+    } catch (err) {
+        console.error(err);
+    }
+    };
+
   return (
     <>
-        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} />
+        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={true} onExportPDF={downloadPdf} />
         <DataGrid
             disableColumnSorting
             disableColumnMenu

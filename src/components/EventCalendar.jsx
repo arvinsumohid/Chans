@@ -7,11 +7,15 @@ import { getCookie } from "../utils/cookieHelper";
 import { TertiaryThemeColor, AnnouncementColor } from "../utils/constant";
 import ViewAppointmentPopup from "./popup/ViewAppointmentPopup";
 import ViewAnnouncementPopup from "./popup/ViewAnnouncementPopup";
+import EventCalendarPopup from "./popup/EventCalendarPopup";
 
 const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' }) => {
   const [isViewAppointment, setIsViewAppointment] = useState(false);
   const [isViewAnnouncement, setIsViewAnnouncement] = useState(false);
   const [idSelected, setIdSelected] = useState(null);
+  const [openCalendarList, setOpenCalendarList] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [calendarList, setCalendarList] = useState([]);
 
   const appointmentData = useMemo(() => {
     return events.map((appointment) => {
@@ -57,7 +61,6 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
 
   const handleViewAppointmentClose = () => {
       setIsViewAppointment(false);
-      setLoadList(true);
   }
 
   const onViewAnnouncement = (id) => {
@@ -67,7 +70,35 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
 
   const handleViewAnnouncementClose = () => {
       setIsViewAnnouncement(false);
-      setLoadList(true);
+  }
+
+  const handleOpenCalendarList = (date) => {
+    setSelectedDate(date);
+    setOpenCalendarList(true);
+  }
+
+  const handleCloseCalendarList = () => {
+    setOpenCalendarList(false);
+    setSelectedDate(null);
+  }
+
+  const dateClickHandler = (info) => {
+    const clickedDate = info.dateStr;
+
+    // Filter events for that date
+    const dayEvents = appointmentData.filter((evt) => {
+        const eventDate = new Date(evt.start_date);
+        const year = eventDate.getFullYear();
+        const month = String(eventDate.getMonth() + 1).padStart(2, "0");
+        const day = String(eventDate.getDate()).padStart(2, "0");
+        console.log(`${year}-${month}-${day}` === clickedDate, `${year}-${month}-${day}`, clickedDate)
+        return `${year}-${month}-${day}` === clickedDate;
+    });
+
+    setCalendarList(dayEvents);
+    handleOpenCalendarList(clickedDate);
+
+    return "none";
   }
 
   return (
@@ -91,6 +122,17 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
 
             fetchEventsForMonth(from, to, eventType);
           }}
+          dayCellContent={(arg) => {
+            return (
+              <div>
+                <p>{arg.dayNumberText}</p>
+
+                
+              </div>
+            );
+          }}
+          moreLinkClick={dateClickHandler}
+          dateClick={dateClickHandler}
           eventContent={(arg) => {
             return (
               <Button
@@ -99,6 +141,7 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
                 fullWidth
                 className="text-left"
                 sx={{ backgroundColor: arg.event.backgroundColor, padding: 0, borderRadius: 0, margin: 0 }}
+                disabled
                 onClick={() => {
                   const eventType = arg.event.extendedProps.eventType;
                   if (eventType === 'appointment') {
@@ -123,6 +166,9 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
       </Activity>
       <Activity mode={isViewAppointment ? "visible" : "hidden"}>
           <ViewAppointmentPopup open={isViewAppointment} handleClose={handleViewAppointmentClose} id={idSelected} />
+      </Activity>
+      <Activity mode={openCalendarList ? "visible" : "hidden"}>
+          <EventCalendarPopup open={openCalendarList} handleClose={handleCloseCalendarList} date={selectedDate} loadData={calendarList} />
       </Activity>
     </>
   );

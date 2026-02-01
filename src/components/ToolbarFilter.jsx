@@ -6,7 +6,7 @@ import useDebounce from '../hooks/useDebounce';
 import DateRangePicker from './DateRangePicker';
 
 
-const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
+const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true, onExportPDF, enableExportPDF = false }) => {
     const [filter, setFilter] = useState({
         search: '',
         field: 'all',
@@ -24,6 +24,10 @@ const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
         onSearch(filter.search, filter.field, from, to);
     }
 
+    const handleExportPDF = () => {
+        onExportPDF(filter.from, filter.to);
+    }
+
     useEffect(() => {
         handleSearch();
     }, [debouncedQuery, filter.field]);
@@ -38,7 +42,7 @@ const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
 
   return (
     <>
-        <Box className="flex flex-col lg:flex-row gap-2 justify-between lg:items-center">
+        <Box className="flex flex-col lg:flex-row gap-2 justify-start lg:items-center">
             <Box className="flex gap-2 items-center">
                 <TextField
                     className="w-1/2 md:w-1/2"
@@ -74,7 +78,17 @@ const ToolbarFilter = ({ dropDownOptions, onSearch, showDateRange = true }) => {
             </Box>
             
             <Activity mode={showDateRange ? 'visible' : 'hidden'}>
-                <DateRangePicker onSearch={handleDateRange} />
+                <Box className="flex gap-2 items-center">
+                    <DateRangePicker onSearch={handleDateRange} />
+                </Box>
+            </Activity>
+
+            <Activity mode={enableExportPDF ? 'visible' : 'hidden'}>
+                <Box className="flex gap-2 items-center">
+                    <Button variant="contained" color="primary" onClick={handleExportPDF}>
+                        Export PDF
+                    </Button>
+                </Box>
             </Activity>
         </Box>
     </>
