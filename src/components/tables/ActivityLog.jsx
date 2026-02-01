@@ -194,7 +194,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
   return (
     <>
-        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={true} onExportPDF={downloadPdf} />
+        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={userType === 'admin'} onExportPDF={downloadPdf} />
         <DataGrid
             disableColumnSorting
             disableColumnMenu
