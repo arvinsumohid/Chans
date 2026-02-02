@@ -8,6 +8,8 @@ import { TertiaryThemeColor, AnnouncementColor } from "../utils/constant";
 import ViewAppointmentPopup from "./popup/ViewAppointmentPopup";
 import ViewAnnouncementPopup from "./popup/ViewAnnouncementPopup";
 import EventCalendarPopup from "./popup/EventCalendarPopup";
+import { getDate } from "../utils/util.helper";
+import "../assets/css/event-calendar.css";
 
 const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' }) => {
   const [isViewAppointment, setIsViewAppointment] = useState(false);
@@ -83,7 +85,13 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
   }
 
   const dateClickHandler = (info) => {
-    const clickedDate = info.dateStr;
+    let clickedDate;
+
+    if (info.dateStr) {
+      clickedDate = info.dateStr;
+    } else {
+      clickedDate = getDate(info.date);
+    }
 
     // Filter events for that date
     const dayEvents = appointmentData.filter((evt) => {
@@ -91,7 +99,7 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
         const year = eventDate.getFullYear();
         const month = String(eventDate.getMonth() + 1).padStart(2, "0");
         const day = String(eventDate.getDate()).padStart(2, "0");
-        console.log(`${year}-${month}-${day}` === clickedDate, `${year}-${month}-${day}`, clickedDate)
+        // console.log(`${year}-${month}-${day}` === clickedDate, `${year}-${month}-${day}`, clickedDate)
         return `${year}-${month}-${day}` === clickedDate;
     });
 
@@ -108,6 +116,7 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
+          dayCellClassNames={() => "clickable-day"}
           dayMaxEvents={3}
           events={appointmentData.map((evt) => ({
             id: evt.id,
@@ -141,7 +150,6 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
                 fullWidth
                 className="text-left"
                 sx={{ backgroundColor: arg.event.backgroundColor, padding: 0, borderRadius: 0, margin: 0 }}
-                disabled
                 onClick={() => {
                   const eventType = arg.event.extendedProps.eventType;
                   if (eventType === 'appointment') {

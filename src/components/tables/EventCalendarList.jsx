@@ -33,7 +33,7 @@ const EventCalendarList = ({ loadList }) => {
             renderCell: (params) => {
                 const event_type = params.row.event_type;
 
-                return <Typography sx={{ color: params.row.color }}>{event_type}</Typography>;
+                return <Typography sx={{ color: params.row.color, textTransform: 'capitalize' }}>{event_type}</Typography>;
             },
         },
         
