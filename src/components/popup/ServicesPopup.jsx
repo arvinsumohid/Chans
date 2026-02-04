@@ -6,10 +6,29 @@ import DialogTitle from '@mui/material/DialogTitle'
 import ServiceForm from '../forms/ServiceForm'
 import ServiceListPopup from '../popup/ServiceListPopup'
 import { Button } from '@mui/material'
-import { PrimaryColor } from '../../utils/constant'
+import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant'
+import { createDoctorService } from '../../providers/create'
 
 const ServicesPopup = ({ open, handleClose, id }) => {
     const [loadList, setLoadList] = useState(false);
+    const [actions, setActions] = useState({
+        selected: [],
+        unselected: [],
+    })
+
+    const handleSave = async () => {
+        // TODO: Implement save logic
+        await createDoctorService({
+            doctor_id: id,
+            selected_service_ids: actions.selected,
+            unselected_service_ids: actions.unselected
+        });
+        setActions({
+            selected: [],
+            unselected: [],
+        });
+        setLoadList(true)
+    };
   return (
     <Dialog
         open={open}
@@ -19,9 +38,10 @@ const ServicesPopup = ({ open, handleClose, id }) => {
     >  
         <DialogTitle>Services</DialogTitle>
         <DialogContent >
-            <ServiceListPopup loadList={loadList} setLoadList={setLoadList} id={id}/>
+            <ServiceListPopup loadList={loadList} setLoadList={setLoadList} id={id} setActions={setActions}/>
         </DialogContent>
         <DialogActions>
+            <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={handleSave}>Save</Button>
             <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={handleClose}>Close</Button>
         </DialogActions>
     </Dialog>
