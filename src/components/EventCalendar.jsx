@@ -150,6 +150,7 @@ const EventCalendar = ({ events, fetchEventsForMonth, eventType = 'appointment' 
                 fullWidth
                 className="text-left"
                 sx={{ backgroundColor: arg.event.backgroundColor, padding: 0, borderRadius: 0, margin: 0 }}
+                disabled
                 onClick={() => {
                   const eventType = arg.event.extendedProps.eventType;
                   if (eventType === 'appointment') {
