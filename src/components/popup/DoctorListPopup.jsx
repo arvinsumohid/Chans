@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Paper, Typography, Button, TextField, debounce } from '@mui/material'
+import { Box, Paper, Typography, Button, TextField, debounce, Checkbox } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid';
 import { useAlert } from '../../hooks/useAlert';
 import { getDoctors } from '../../providers/list';
-import { createDoctorService } from '../../providers/create';
-import { deleteDoctorService } from '../../providers/delete';
-import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant';
 
-const DoctorListPopup = ({ loadList, setLoadList, id }) => {
+const DoctorListPopup = ({ loadList, setLoadList, id, setActions }) => {
     const { showAlert } = useAlert();
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
@@ -29,43 +26,32 @@ const DoctorListPopup = ({ loadList, setLoadList, id }) => {
                 (ds) => ds.service_id === id
             );
 
-            if (matches) {
-                return (
-                    <Box>
-                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleUnselectDoctor(params)}>Remove</Button>
-                    </Box>
-                )
-            }
-            return (
-                <Box>
-                    <Button color="success" variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} size="small" onClick={() => handleSelectDoctor(params)}>Select</Button>
-                </Box>
-            )
+            return <Checkbox key={params.row.id + search} onChange={(value) => handleCheckboxChange(params, value)} defaultChecked={matches} />
         }},
     ];
 
-    const handleSelectDoctor = async (params) => {
-        const doctorServiceData = {
-            service_ids: [id],
-            doctor_id: params.row.id
-        };
-        await createDoctorService(doctorServiceData);
-        setLoadList(true);
-    }
-
-    const handleUnselectDoctor = async (params) => {
-        const doctorServiceData = {
-            service_id: id,
-            doctor_id: params.row.id
-        };
-        await deleteDoctorService(doctorServiceData);
-        setLoadList(true);
+    const handleCheckboxChange = (params, value) => {
+        const isChecked = value.target.checked
+        if (isChecked) {
+            setActions((v) => {
+                const newSelected = [...new Set([...v.selected, params.row.id])];
+                const newUnselected = v.unselected.filter(id => id !== params.row.id);
+                return {...v, selected: newSelected, unselected: newUnselected}
+            })
+        } else {
+            setActions((v) => {
+                const newUnselected = [...new Set([...v.unselected, params.row.id])];
+                const newSelected = v.selected.filter(id => id !== params.row.id);
+                return {...v, selected: newSelected, unselected: newUnselected}
+            })
+        }
     }
 
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
                 setLoading(true);
+                setDoctors([]);
                 const response = await getDoctors({ 
                     page: paginationModel.page + 1,
                     size: paginationModel.pageSize,
@@ -83,6 +69,13 @@ const DoctorListPopup = ({ loadList, setLoadList, id }) => {
 
         fetchDoctors();       
     }, [paginationModel.page, paginationModel.pageSize, loadList, search]);
+    
+    useEffect(() => {
+        setActions({
+            selected: [],
+            unselected: [],
+        });
+    }, [paginationModel.page, search]);
 
     const handleSearch = debounce((e) => {
         setSearch(e.target.value);

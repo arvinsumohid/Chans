@@ -3,9 +3,6 @@ import { Box, Paper, Typography, Button, TextField, debounce, Checkbox } from '@
 import { DataGrid } from '@mui/x-data-grid';
 import { useAlert } from '../../hooks/useAlert';
 import { getServices } from '../../providers/list';
-import { createDoctorService } from '../../providers/create';
-import { deleteDoctorService } from '../../providers/delete';
-import { PrimaryThemeColor } from '../../utils/constant';
 
 const ServiceListPopup = ({ loadList, setLoadList, id, setActions }) => {
     const { showAlert } = useAlert();   
@@ -28,19 +25,6 @@ const ServiceListPopup = ({ loadList, setLoadList, id, setActions }) => {
             );
 
             return <Checkbox key={params.row.id + search} onChange={(value) => handleCheckboxChange(params, value)} defaultChecked={matches} />
-            // if (matches) {
-            //     return (
-            //         <Box>
-            //             <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => handleUnselectService(params)}>Selected</Button>
-            //         </Box>
-            //     )
-            // }
-
-            // return (
-            //     <Box>
-            //         <Button color="success" variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} size="small" onClick={() => handleSelectService(params)}>Select</Button>
-            //     </Box>
-            // )
         }},
     ];
 
@@ -60,24 +44,6 @@ const ServiceListPopup = ({ loadList, setLoadList, id, setActions }) => {
             })
         }
     }
-
-    // const handleSelectService = async (params) => {
-    //     const doctorServiceData = {
-    //         doctor_id: id,
-    //         service_ids: [params.row.id]
-    //     };
-    //     await createDoctorService(doctorServiceData);
-    //     setLoadList(true);
-    // }
-
-    // const handleUnselectService = async (params) => {
-    //     const doctorServiceData = {
-    //         doctor_id: id,
-    //         service_id: params.row.id
-    //     };
-    //     await deleteDoctorService(doctorServiceData);
-    //     setLoadList(true);
-    // }
 
     useEffect(() => {
         const fetchServices = async () => {

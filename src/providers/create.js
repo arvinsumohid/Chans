@@ -31,9 +31,16 @@ export const updateService = async (id, serviceData) => {
     return data;
 }
 
-export const createDoctorService = async (doctorServiceData) => {
+export const createDoctorServiceByDoctorId = async (doctorServiceData) => {
     const { doctor_id, ...serviceData } = doctorServiceData;
     const data = await tryCatch(() => axiosInstance.post(`/doctor-services/doctor/${doctor_id}`, serviceData));
+
+    return data;
+}
+
+export const createDoctorServiceByServiceId = async (doctorServiceData) => {
+    const { service_id, ...serviceData } = doctorServiceData;
+    const data = await tryCatch(() => axiosInstance.post(`/doctor-services/service/${service_id}`, serviceData));
 
     return data;
 }

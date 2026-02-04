@@ -7,7 +7,7 @@ import ServiceForm from '../forms/ServiceForm'
 import ServiceListPopup from '../popup/ServiceListPopup'
 import { Button } from '@mui/material'
 import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant'
-import { createDoctorService } from '../../providers/create'
+import { createDoctorServiceByDoctorId } from '../../providers/create'
 
 const ServicesPopup = ({ open, handleClose, id }) => {
     const [loadList, setLoadList] = useState(false);
@@ -17,8 +17,7 @@ const ServicesPopup = ({ open, handleClose, id }) => {
     })
 
     const handleSave = async () => {
-        // TODO: Implement save logic
-        await createDoctorService({
+        await createDoctorServiceByDoctorId({
             doctor_id: id,
             selected_service_ids: actions.selected,
             unselected_service_ids: actions.unselected
