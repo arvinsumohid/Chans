@@ -174,27 +174,27 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     }
 
     const downloadPdf = async (from, to) => {
-    try {
-        const response = await getEventsPdf({ page: 1, size: 50, from, to, type: eventType });
+        try {
+            const response = await getEventsPdf({ page: 1, size: 50, from, to, type: eventType });
 
-        // response.data is now a proper binary buffer
-        const blob = new Blob([response.data], { type: "application/pdf" });
-        const url = window.URL.createObjectURL(blob);
+            // response.data is now a proper binary buffer
+            const blob = new Blob([response.data], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "appointments.pdf";
-        a.click();
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "appointments.pdf";
+            a.click();
 
-        window.URL.revokeObjectURL(url); // clean up
-    } catch (err) {
-        console.error(err);
-    }
+            window.URL.revokeObjectURL(url); // clean up
+        } catch (err) {
+            console.error(err);
+        }
     };
 
   return (
     <>
-        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={userType === 'admin'} onExportPDF={downloadPdf} />
+        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={userType === 'admin'} disableButtonExportPDF={totalItem == 0} onExportPDF={downloadPdf} />
         <DataGrid
             disableColumnSorting
             disableColumnMenu
