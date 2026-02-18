@@ -37,7 +37,7 @@ const ServicesPopup = ({ open, handleClose, id }) => {
     >  
         <DialogTitle>Services</DialogTitle>
         <DialogContent >
-            <ServiceListPopup loadList={loadList} setLoadList={setLoadList} id={id} setActions={setActions}/>
+            <ServiceListPopup loadList={loadList} setLoadList={setLoadList} id={id} actions={actions} setActions={setActions}/>
         </DialogContent>
         <DialogActions>
             <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={handleSave}>Save</Button>
