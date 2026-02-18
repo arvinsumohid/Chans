@@ -36,7 +36,7 @@ const DoctorsPopup = ({ open, handleClose, id }) => {
     >  
         <DialogTitle>Medical personnel</DialogTitle>
         <DialogContent >
-            <DoctorListPopup loadList={loadList} setLoadList={setLoadList} id={id} setActions={setActions}/>
+            <DoctorListPopup loadList={loadList} setLoadList={setLoadList} id={id} actions={actions} setActions={setActions}/>
         </DialogContent>
         <DialogActions>
             <Button variant="contained" sx={{ textTransform: 'none', ...PrimaryThemeColor }} onClick={handleSave}>Save</Button>
