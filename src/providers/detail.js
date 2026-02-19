@@ -30,3 +30,9 @@ export const getEventsPdf = async (filter) => {
 
     return data;
 }
+
+export const getAppointmentBookedCountByDate = async (date) => {
+    const data = await tryCatch(() => axiosInstance.get(`/events/appointments/booked-count`, { params: { date } }));
+
+    return data;
+}

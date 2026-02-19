@@ -2,7 +2,7 @@ import { Card, Typography, Autocomplete, TextField, Button, Box } from "@mui/mat
 import { useState, useEffect, useMemo } from "react";
 import { getServices } from "../../providers/list";
 import { useAlert } from "../../hooks/useAlert";
-import { getDoctorServicesByServiceId } from "../../providers/detail";
+import { getAppointmentBookedCountByDate, getDoctorServicesByServiceId } from "../../providers/detail";
 import { getCookie } from "../../utils/cookieHelper";
 import { createEvent, updateEvent } from "../../providers/create";
 import CustomCalendar from "../CustomCalendar";
@@ -18,6 +18,10 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
         service: null,
         event_date: null,
     });
+    const [bookedCount, setBookedCount] = useState(null);
+    const [isFetchingBookedCount, setIsFetchingBookedCount] = useState(false);
+
+    const MAX_APPOINTMENTS_PER_DAY = 50;
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -44,6 +48,41 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
 
         updateServiceData()
     }, [appointment]);
+
+  useEffect(() => {
+    const fetchBookedCount = async () => {
+      const hasValidDate =
+        appointmentData.event_date &&
+        dayjs(appointmentData.event_date).isValid();
+
+      if (!hasValidDate) {
+        setBookedCount(null);
+        return;
+      }
+
+      const selectedDate = dayjs(appointmentData.event_date).format("YYYY-MM-DD");
+
+      try {
+        setIsFetchingBookedCount(true);
+        const response = await getAppointmentBookedCountByDate(selectedDate);
+        const nextBookedCount =
+          response?.data?.data?.booked_count ??
+          response?.data?.booked_count ??
+          0;
+        setBookedCount(nextBookedCount);
+      } catch (err) {
+        setBookedCount(null);
+        showAlert(err.message, "error");
+      } finally {
+        setIsFetchingBookedCount(false);
+      }
+    };
+
+    fetchBookedCount();
+  }, [appointmentData.event_date, showAlert]);
+
+  const remainingSlots = bookedCount === null ? null : Math.max(MAX_APPOINTMENTS_PER_DAY - bookedCount, 0);
+  const isDateFullyBooked = bookedCount !== null && bookedCount >= MAX_APPOINTMENTS_PER_DAY;
 
   const doctorsList = useMemo(() => {
     return doctors.map((doctor) => ({
@@ -77,6 +116,14 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
     setAppointmentData((prev) => ({ ...prev, doctor: newValue }));
   };
 
+  const handleDateChange = (newValue) => {
+    const isCompleteValidDate = newValue && dayjs(newValue).isValid();
+    setAppointmentData((prev) => ({
+      ...prev,
+      event_date: isCompleteValidDate ? newValue : null,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!appointmentData.doctor || !appointmentData.service) {
@@ -90,6 +137,11 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
 
     if (appointmentData.event_date.isBefore(dayjs())) {
       showAlert("Please select a date in the future", 'error');
+      return;
+    }
+
+    if (isDateFullyBooked) {
+      showAlert("Selected date is fully booked", "error");
       return;
     }
 
@@ -159,15 +211,27 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
         />
         <CustomCalendar
           value={appointmentData.event_date}
-          onChange={(newValue) => setAppointmentData((prev) => ({ ...prev, event_date: newValue }))}
+          onChange={handleDateChange}
           label="Date"
           name="event_date"
           errors={[]}
         />
+        {appointmentData.event_date && (
+          <Typography variant="body2" color={isDateFullyBooked ? "error" : "text.secondary"}>
+            {isFetchingBookedCount
+              ? "Checking booked count..."
+              : `Booked: ${bookedCount ?? 0}/${MAX_APPOINTMENTS_PER_DAY} | Remaining: ${remainingSlots ?? MAX_APPOINTMENTS_PER_DAY}`}
+          </Typography>
+        )}
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-        <Button variant="contained" sx={{ ...PrimaryThemeColor }} type="submit">
+        <Button
+          variant="contained"
+          sx={{ ...PrimaryThemeColor }}
+          type="submit"
+          disabled={isFetchingBookedCount || isDateFullyBooked}
+        >
           Save
         </Button>
         {!isPopup && <Button variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }} onClick={onClose}>
