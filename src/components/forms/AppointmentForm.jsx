@@ -21,7 +21,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
     const [bookedCount, setBookedCount] = useState(null);
     const [isFetchingBookedCount, setIsFetchingBookedCount] = useState(false);
 
-    const MAX_APPOINTMENTS_PER_DAY = 50;
+    const MAX_APPOINTMENTS_PER_DAY = parseInt(import.meta.env.VITE_MAX_APPOINTMENTS_PER_DAY) || 50;
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -83,6 +83,8 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
 
   const remainingSlots = bookedCount === null ? null : Math.max(MAX_APPOINTMENTS_PER_DAY - bookedCount, 0);
   const isDateFullyBooked = bookedCount !== null && bookedCount >= MAX_APPOINTMENTS_PER_DAY;
+  const isBookedAtEightyPercent = bookedCount !== null && bookedCount >= MAX_APPOINTMENTS_PER_DAY * 0.8;
+  const bookedStatusColor = isBookedAtEightyPercent ? "error.main" : "success.main";
 
   const doctorsList = useMemo(() => {
     return doctors.map((doctor) => ({
@@ -163,21 +165,24 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
       }
 
       if (updateRes.status === 200 || updateRes.status === 201) {
-        showAlert(updateRes.status === 200 ? 'Appointment updated successfully' : 'Appointment added successfully', 'success');
-        onClose();
-        setLoadList(true);
+        const successMessage =
+          updateRes?.data?.message ||
+          (updateRes.status === 200
+            ? "Appointment updated successfully"
+            : "Appointment added successfully");
+        showAlert(successMessage, "success");
         setAppointmentData({
           doctor: null,
           service: null,
           event_date: null,
         });
+        setLoadList(true);
         onClose();
-        showAlert(`${title} added successfully`, 'success');
       } else {
-        showAlert('Something went wrong', 'error')
+        showAlert(updateRes?.data?.message || "Something went wrong", "error");
       }
     } catch (err) {
-      showAlert(err.message, 'error');
+      showAlert(err.message || "Something went wrong", "error");
     }
   };
 
@@ -217,7 +222,7 @@ const AppointmentForm = ({ onClose, setLoadList, isPopup = false, title = 'Appoi
           errors={[]}
         />
         {appointmentData.event_date && (
-          <Typography variant="body2" color={isDateFullyBooked ? "error" : "text.secondary"}>
+          <Typography variant="body2" sx={{ color: bookedStatusColor }}>
             {isFetchingBookedCount
               ? "Checking booked count..."
               : `Booked: ${bookedCount ?? 0}/${MAX_APPOINTMENTS_PER_DAY} | Remaining: ${remainingSlots ?? MAX_APPOINTMENTS_PER_DAY}`}
