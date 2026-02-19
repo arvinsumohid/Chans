@@ -11,7 +11,6 @@ import EditAppointmentPopup from '../popup/EditAppointmentPopup';
 import ViewAppointmentPopup from '../popup/ViewAppointmentPopup';
 import { deleteAnnouncement } from '../../providers/delete';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getEventsPdf } from '../../providers/detail';
@@ -27,6 +26,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         page: 0,
         pageSize: 10,
     });
+    const [sortModel, setSortModel] = useState([]);
     
     const [isEditAppointment, setIsEditAppointment] = useState(false);
     const [isViewAppointment, setIsViewAppointment] = useState(false);
@@ -34,26 +34,26 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
     const columnsByUserType = useMemo(() => {
         const columns = [
-            { flex: 1, field: 'user', headerName: 'Requested By', renderCell: (params) => {
+            { flex: 1, field: 'user', headerName: 'Requested By', sortable: false, renderCell: (params) => {
                 return <span className="capitalize">{params.row.user_lastname}, {params.row.user_firstname}</span>;
             } },
-            { flex: 1, field: 'doctor', headerName: 'Medical personnel', renderCell: (params) => {
+            { flex: 1, field: 'doctor', headerName: 'Medical personnel', sortable: false, renderCell: (params) => {
                 return <span className="capitalize">{params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
             }},
-            { flex: 1, field: 'service', headerName: 'Service', renderCell: (params) => {
+            { flex: 1, field: 'service', headerName: 'Service', sortable: false, renderCell: (params) => {
                 return <span className="capitalize">{params.row.service_name}</span>;
             } },
-            { flex: 1, field: 'event_date', headerName: 'Appointment Date', renderCell: (params) => {
+            { flex: 1, field: 'event_date', headerName: 'Appointment Date', sortable: true, renderCell: (params) => {
                 const date = getDate(params.row.event_date);
                 return <span className="capitalize">{date}</span>;
             } },
-            { flex: 1, field: 'status', headerName: 'Status', renderCell: (params) => {
+            { flex: 1, field: 'status', headerName: 'Status', sortable: false, renderCell: (params) => {
                 const status = getDateStatus(params.row);
                 const sx = {
                     textTransform: 'uppercase',
                 };
 
-                if (status === 'DONE' || status === 'CANCELED') {
+                if (status === 'DONE' || status === 'DISAPPROVED') {
                     sx.color = AnnouncementColor;
                 } else {
                     sx.color = PrimaryColor;
@@ -61,7 +61,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
                 return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
             } },
-            { flex: 1, field: 'action', headerName: 'Action', renderCell: (params) => {
+            { flex: 1, field: 'action', headerName: 'Action', sortable: false, renderCell: (params) => {
                 return (
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                         <Tooltip title="View" arrow disableInteractive>
@@ -113,7 +113,9 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
                     type: eventType,
                     search,
                     from: dateRange.from,
-                    to: dateRange.to
+                    to: dateRange.to,
+                    sort_by: sortModel?.[0]?.field === 'event_date' ? 'appointment_date' : sortModel?.[0]?.field,
+                    sort_order: sortModel?.[0]?.sort
                 });
                 setActivityLogs(response.data.data.items || []);
                 setTotalItem(response.data.data.total_item || 0);
@@ -125,7 +127,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         };
 
         fetchDoctors();       
-    }, [paginationModel.page, paginationModel.pageSize, eventType, loadList, search, dateRange]);
+    }, [paginationModel.page, paginationModel.pageSize, eventType, loadList, search, dateRange, sortModel]);
 
     const handleSearch = (query, field, from, to) => {
         if (query && field) {
@@ -196,7 +198,6 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     <>
         <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={userType === 'admin'} disableButtonExportPDF={totalItem == 0} onExportPDF={downloadPdf} />
         <DataGrid
-            disableColumnSorting
             disableColumnMenu
             rows={activityLogs}
             columns={columnsByUserType}
@@ -204,6 +205,12 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             getRowHeight={() => 'auto'}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
+            sortModel={sortModel}
+            onSortModelChange={(model) => {
+                setSortModel(model);
+                setPaginationModel((prev) => ({ ...prev, page: 0 }));
+            }}
+            sortingMode="server"
             pageSizeOptions={[5, 10]}
             sx={{ 
                 border: 0,
