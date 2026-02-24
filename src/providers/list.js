@@ -23,8 +23,8 @@ export const getServices = async (params) => {
 }
 
 export const getEventList = async (params) => {
-    const { page, size, search, type, from, to } = params;
-    const data = await tryCatch(() => axiosInstance.get('/events', { params: { page, size, search, type, from, to } }));
+    const { page, size, search, type, from, to, sort_by, sort_order } = params;
+    const data = await tryCatch(() => axiosInstance.get('/events', { params: { page, size, search, type, from, to, sort_by, sort_order } }));
 
     return data;
 }
