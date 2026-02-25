@@ -5,7 +5,7 @@ import { useAlert } from '../../hooks/useAlert'
 import { LoadListContext } from '../../contexts/LoadListContext';
 import { getDate, getDateStatus } from '../../utils/util.helper';
 import { AnnouncementColor, PrimaryColor, ViewColor } from '../../utils/constant';
-import { Typography, Box, Button, Tooltip } from '@mui/material';
+import { Typography, Box, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import ToolbarFilter from '../ToolbarFilter';
 import EditAppointmentPopup from '../popup/EditAppointmentPopup';
 import ViewAppointmentPopup from '../popup/ViewAppointmentPopup';
@@ -14,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getEventsPdf } from '../../providers/detail';
+import { cancelAnnouncement } from '../../providers/create';
 
 const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     const { showAlert } = useAlert();
@@ -30,7 +31,18 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     
     const [isEditAppointment, setIsEditAppointment] = useState(false);
     const [isViewAppointment, setIsViewAppointment] = useState(false);
+    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+    const [deleteIdSelected, setDeleteIdSelected] = useState(null);
+    const [deleteReason, setDeleteReason] = useState('');
+    const [otherDeleteReason, setOtherDeleteReason] = useState('');
     const [idSelected, setIdSelected] = useState(null);
+
+    const deleteReasonOptions = [
+        'Attending seminar',
+        'Meeting',
+        'Not around/absent',
+        'Others',
+    ];
 
     const columnsByUserType = useMemo(() => {
         const columns = [
@@ -53,7 +65,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
                     textTransform: 'uppercase',
                 };
 
-                if (status === 'DONE' || status === 'DISAPPROVED') {
+                if (status === 'DONE' || status === 'CANCELED') {
                     sx.color = AnnouncementColor;
                 } else {
                     sx.color = PrimaryColor;
@@ -76,7 +88,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
                                 )}
                                 <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
                                     <Tooltip title="Cancel" arrow disableInteractive>
-                                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onDeleteAppointment(params.row.event_id)}><DoDisturbIcon /></Button>
+                                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onOpenDeletePopup(params.row.event_id)}><DoDisturbIcon /></Button>
                                     </Tooltip>
                                 </Activity>
                             </>
@@ -163,17 +175,74 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         setLoadList(true);
     }
 
+    const onOpenDeletePopup = (id) => {
+        setDeleteIdSelected(id);
+        setDeleteReason('');
+        setOtherDeleteReason('');
+        setIsDeletePopupOpen(true);
+    };
+
+    const onCloseDeletePopup = () => {
+        setIsDeletePopupOpen(false);
+        setDeleteIdSelected(null);
+        setDeleteReason('');
+        setOtherDeleteReason('');
+    };
+
     const onDeleteAppointment = async (id) => {
         try {
             const res = await deleteAnnouncement(id);
             if (res.status === 200) {
-                showAlert('Appointment deleted successfully', 'success');
+                showAlert('Appointment cancelled successfully', 'success');
                 setLoadList(true);
+                onCloseDeletePopup();
             }
         } catch (error) {
             showAlert(error.message, 'error');
         }
     }
+
+    const onCancelAppointment = async (id, reason) => {
+        try {
+            const res = await cancelAnnouncement(id, { reason });
+            if (res.status === 200) {
+                showAlert('Appointment cancelled successfully', 'success');
+                setLoadList(true);
+                onCloseDeletePopup();
+            }
+        } catch (error) {
+            showAlert(error.message, 'error');
+        }
+    }
+
+    const onConfirmAdminCancel = async () => {
+        if (!deleteReason) {
+            showAlert('Please select a reason before deleting.', 'error');
+            return;
+        }
+
+        if (deleteReason === 'Others' && !otherDeleteReason.trim()) {
+            showAlert('Please specify the reason for Others.', 'error');
+            return;
+        }
+        
+        let reasonToSend = '';
+        if (deleteReason === 'Attending seminar') {
+            reasonToSend = 'your appointment has been cancelled as the doctor is attending a seminar';
+        } else if (deleteReason === 'Meeting') {
+            reasonToSend = 'your appointment has been cancelled as the doctor is required to attend a meeting';
+        } else if (deleteReason === 'Not around/absent') {
+            reasonToSend = 'your appointment has been cancelled as the doctor is not available on the selected date';
+        } else if (deleteReason === 'Others') {
+            reasonToSend = otherDeleteReason.trim();
+        } else {
+            reasonToSend = deleteReason;
+        }
+
+        await onCancelAppointment(deleteIdSelected, reasonToSend);
+        await setIsDeletePopupOpen(false);
+        setLoadList(true);
+    };
 
     const downloadPdf = async (from, to) => {
         try {
@@ -231,6 +300,53 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         <Activity mode={isViewAppointment ? "visible" : "hidden"}>
             <ViewAppointmentPopup open={isViewAppointment} handleClose={handleViewAppointmentClose} id={idSelected} />
         </Activity>
+        <Dialog open={isDeletePopupOpen} onClose={onCloseDeletePopup} fullWidth maxWidth="sm">
+            <DialogTitle>Cancel Appointment</DialogTitle>
+            <DialogContent sx={{ pt: 2, display: 'grid', gap: 2 }}>
+                {userType === 'admin' ? (
+                    <>
+                        <FormControl fullWidth>
+                            <InputLabel id="delete-reason-label">Reason</InputLabel>
+                            <Select
+                                labelId="delete-reason-label"
+                                label="Reason"
+                                value={deleteReason}
+                                onChange={(e) => setDeleteReason(e.target.value)}
+                            >
+                                {deleteReasonOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        {deleteReason === 'Others' && (
+                            <TextField
+                                fullWidth
+                                multiline
+                                minRows={3}
+                                label="Specify reason"
+                                value={otherDeleteReason}
+                                onChange={(e) => setOtherDeleteReason(e.target.value)}
+                                helperText="This specific reason will appear on SMS."
+                            />
+                        )}
+                    </>
+                ):(
+                    <Typography variant="body2" color="text.secondary">
+                        Are you sure you want to cancel this appointment?
+                    </Typography>
+                )}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onCloseDeletePopup} variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }}>
+                    Cancel
+                </Button>
+                <Button onClick={() => userType === 'admin' ? onConfirmAdminCancel() : onDeleteAppointment(deleteIdSelected)} color="error" variant="contained">
+                    Proceed
+                </Button>
+            </DialogActions>
+        </Dialog>
     </>
   )
 }

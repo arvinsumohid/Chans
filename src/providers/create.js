@@ -63,3 +63,9 @@ export const updateBHWStatus = async (userId, isBHW) => {
 
     return data;
 }
+
+export const cancelAnnouncement = async (id, payload = {}) => {
+    const data = await tryCatch(() => axiosInstance.post(`/events/${id}/cancel`, payload));
+
+    return data;
+}
