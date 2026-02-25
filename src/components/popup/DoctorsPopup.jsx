@@ -7,8 +7,10 @@ import DoctorListPopup from '../popup/DoctorListPopup'
 import { Button } from '@mui/material'
 import { PrimaryColor, PrimaryThemeColor } from '../../utils/constant';
 import { createDoctorServiceByServiceId } from '../../providers/create'
+import { useAlert } from '../../hooks/useAlert';
 
 const DoctorsPopup = ({ open, handleClose, id }) => {
+    const { showAlert } = useAlert();
     const [loadList, setLoadList] = useState(false);
     const [actions, setActions] = useState({
         selected: [],
@@ -16,16 +18,28 @@ const DoctorsPopup = ({ open, handleClose, id }) => {
     })
 
     const handleSave = async () => {
-        await createDoctorServiceByServiceId({
-            service_id: id,
-            selected_doctor_ids: actions.selected,
-            unselected_doctor_ids: actions.unselected
-        });
-        setActions({
-            selected: [],
-            unselected: [],
-        });
-        setLoadList(true)
+        try {
+            const response = await createDoctorServiceByServiceId({
+                service_id: id,
+                selected_doctor_ids: actions.selected,
+                unselected_doctor_ids: actions.unselected
+            });
+
+            if (response.status === 200 || response.status === 201) {
+                showAlert(response?.data?.message || 'Medical personnel updated successfully', 'success');
+                setActions({
+                    selected: [],
+                    unselected: [],
+                });
+                setLoadList(true);
+                handleClose();
+                return;
+            }
+
+            showAlert(response?.data?.message || 'Something went wrong', 'error');
+        } catch (error) {
+            showAlert(error.message || 'Something went wrong', 'error');
+        }
     };
   return (
     <Dialog

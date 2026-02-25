@@ -47,7 +47,7 @@ const UserList = ({ loadList, setLoadList }) => {
         { flex: 1, field: 'last_login', headerName: 'Last login', renderCell: (params) => (
             <Typography variant="body2" className="capitalize">{params.row.last_login_at ? getDate(params.row.last_login_at) : '—'}</Typography>
         )},
-        {flex: 1, field: 'is_bhw', headerName: 'BHW', renderCell: (params) => params.row.role !== 'admin' && (
+        {flex: 1, field: 'is_bhw', headerName: 'Assign as Barangay Health Worker', renderCell: (params) => params.row.role !== 'admin' && (
             <Typography variant="body2">
                 <Switch
                     checked={params.row.is_bhw}
