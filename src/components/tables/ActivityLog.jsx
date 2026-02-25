@@ -18,7 +18,7 @@ import { cancelAnnouncement } from '../../providers/create';
 
 const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     const { showAlert } = useAlert();
-    const {loadList, setLoadList} = useContext(LoadListContext);
+    const { loadList, setLoadList } = useContext(LoadListContext);
     const [search, setSearch] = useState('');
     const [dateRange, setDateRange] = useState({})
     const [totalItem, setTotalItem] = useState(0);
@@ -28,7 +28,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         pageSize: 10,
     });
     const [sortModel, setSortModel] = useState([]);
-    
+
     const [isEditAppointment, setIsEditAppointment] = useState(false);
     const [isViewAppointment, setIsViewAppointment] = useState(false);
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
@@ -46,56 +46,68 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
 
     const columnsByUserType = useMemo(() => {
         const columns = [
-            { flex: 1, field: 'user', headerName: 'Requested By', sortable: false, renderCell: (params) => {
-                return <span className="capitalize">{params.row.user_lastname}, {params.row.user_firstname}</span>;
-            } },
-            { flex: 1, field: 'doctor', headerName: 'Medical personnel', sortable: false, renderCell: (params) => {
-                return <span className="capitalize">{params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
-            }},
-            { flex: 1, field: 'service', headerName: 'Service', sortable: false, renderCell: (params) => {
-                return <span className="capitalize">{params.row.service_name}</span>;
-            } },
-            { flex: 1, field: 'event_date', headerName: 'Appointment Date', sortable: true, renderCell: (params) => {
-                const date = getDate(params.row.event_date);
-                return <span className="capitalize">{date}</span>;
-            } },
-            { flex: 1, field: 'status', headerName: 'Status', sortable: false, renderCell: (params) => {
-                const status = getDateStatus(params.row);
-                const sx = {
-                    textTransform: 'uppercase',
-                };
-
-                if (status === 'DONE' || status === 'CANCELED') {
-                    sx.color = AnnouncementColor;
-                } else {
-                    sx.color = PrimaryColor;
+            {
+                flex: 1, field: 'user', headerName: 'Requested By', sortable: false, renderCell: (params) => {
+                    return <span className="capitalize">{params.row.user_lastname}, {params.row.user_firstname}</span>;
                 }
+            },
+            {
+                flex: 1, field: 'doctor', headerName: 'Medical personnel', sortable: false, renderCell: (params) => {
+                    return <span className="capitalize">{params.row.doctor_lastname}, {params.row.doctor_firstname}</span>;
+                }
+            },
+            {
+                flex: 1, field: 'service', headerName: 'Service', sortable: false, renderCell: (params) => {
+                    return <span className="capitalize">{params.row.service_name}</span>;
+                }
+            },
+            {
+                flex: 1, field: 'event_date', headerName: 'Appointment Date', sortable: true, renderCell: (params) => {
+                    const date = getDate(params.row.event_date);
+                    return <span className="capitalize">{date}</span>;
+                }
+            },
+            {
+                flex: 1, field: 'status', headerName: 'Status', sortable: false, renderCell: (params) => {
+                    const status = getDateStatus(params.row);
+                    const sx = {
+                        textTransform: 'uppercase',
+                    };
 
-                return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
-            } },
-            { flex: 1, field: 'action', headerName: 'Action', sortable: false, renderCell: (params) => {
-                return (
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <Tooltip title="View" arrow disableInteractive>
-                            <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAppointment(params.row.event_id)}><VisibilityIcon /></Button>
-                        </Tooltip>
-                        {!params.row.event_deleted_at && (
-                            <>
-                                {userType !== 'admin' && (
-                                    <Tooltip title="Edit" arrow disableInteractive>
-                                        <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
-                                    </Tooltip>
-                                )}
-                                <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
-                                    <Tooltip title="Cancel" arrow disableInteractive>
-                                        <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onOpenDeletePopup(params.row.event_id)}><DoDisturbIcon /></Button>
-                                    </Tooltip>
-                                </Activity>
-                            </>
-                        )}
-                    </Box>
-                )
-            }}
+                    if (status === 'DONE' || status === 'DISAPPROVED') {
+                        sx.color = AnnouncementColor;
+                    } else {
+                        sx.color = PrimaryColor;
+                    }
+
+                    return <Typography variant="body2" sx={sx} className="capitalize">{status}</Typography>;
+                }
+            },
+            {
+                flex: 1, field: 'action', headerName: 'Action', sortable: false, renderCell: (params) => {
+                    return (
+                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                            <Tooltip title="View" arrow disableInteractive>
+                                <Button color="primary" variant="outlined" sx={{ textTransform: 'none', borderColor: ViewColor, color: ViewColor }} size="small" onClick={() => onViewAppointment(params.row.event_id)}><VisibilityIcon /></Button>
+                            </Tooltip>
+                            {!params.row.event_deleted_at && (
+                                <>
+                                    {userType !== 'admin' && (
+                                        <Tooltip title="Edit" arrow disableInteractive>
+                                            <Button color="success" variant="outlined" sx={{ textTransform: 'none', borderColor: PrimaryColor, color: PrimaryColor }} size="small" onClick={() => onEditAppointment(params.row.event_id)}><EditIcon /></Button>
+                                        </Tooltip>
+                                    )}
+                                    <Activity mode={new Date(params.row.event_date) > new Date() ? 'visible' : 'hidden'}>
+                                        <Tooltip title="Cancel" arrow disableInteractive>
+                                            <Button color="error" variant="contained" sx={{ textTransform: 'none' }} size="small" onClick={() => onOpenDeletePopup(params.row.event_id)}><DoDisturbIcon /></Button>
+                                        </Tooltip>
+                                    </Activity>
+                                </>
+                            )}
+                        </Box>
+                    )
+                }
+            }
         ];
 
         // if (userType === 'admin') {
@@ -105,7 +117,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         if (userType !== 'admin') {
             return columns.filter((col) => col.field !== 'user');
         }
-        
+
         return columns;
     }, [userType]);
 
@@ -119,7 +131,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
-                const response = await getEventList({ 
+                const response = await getEventList({
                     page: paginationModel.page + 1,
                     size: paginationModel.pageSize,
                     type: eventType,
@@ -138,7 +150,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             }
         };
 
-        fetchDoctors();       
+        fetchDoctors();
     }, [paginationModel.page, paginationModel.pageSize, eventType, loadList, search, dateRange, sortModel]);
 
     const handleSearch = (query, field, from, to) => {
@@ -225,7 +237,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
             showAlert('Please specify the reason for Others.', 'error');
             return;
         }
-        
+
         let reasonToSend = '';
         if (deleteReason === 'Attending seminar') {
             reasonToSend = 'your appointment has been cancelled as the doctor is attending a seminar';
@@ -264,92 +276,92 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         }
     };
 
-  return (
-    <>
-        <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={userType === 'admin'} disableButtonExportPDF={totalItem == 0} onExportPDF={downloadPdf} />
-        <DataGrid
-            disableColumnMenu
-            rows={activityLogs}
-            columns={columnsByUserType}
-            getRowId={(row) => row.event_id}
-            getRowHeight={() => 'auto'}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            sortModel={sortModel}
-            onSortModelChange={(model) => {
-                setSortModel(model);
-                setPaginationModel((prev) => ({ ...prev, page: 0 }));
-            }}
-            sortingMode="server"
-            pageSizeOptions={[5, 10]}
-            sx={{ 
-                border: 0,
-                '& .MuiDataGrid-cell': {
-                    padding: '8px 16px',
-                    whiteSpace: 'normal',
-                    lineHeight: '1.5'
-                }
-            }}
-            loading={loadList}
-            paginationMode="server"
-            rowCount={totalItem}
-            disableRowSelectionOnClick
-        />
-        <Activity mode={isEditAppointment ? "visible" : "hidden"}>
-            <EditAppointmentPopup open={isEditAppointment} handleClose={handleEditAppointmentClose} id={idSelected} />
-        </Activity>
-        <Activity mode={isViewAppointment ? "visible" : "hidden"}>
-            <ViewAppointmentPopup open={isViewAppointment} handleClose={handleViewAppointmentClose} id={idSelected} />
-        </Activity>
-        <Dialog open={isDeletePopupOpen} onClose={onCloseDeletePopup} fullWidth maxWidth="sm">
-            <DialogTitle>Cancel Appointment</DialogTitle>
-            <DialogContent sx={{ pt: 2, display: 'grid', gap: 2 }}>
-                {userType === 'admin' ? (
-                    <>
-                        <FormControl fullWidth>
-                            <InputLabel id="delete-reason-label">Reason</InputLabel>
-                            <Select
-                                labelId="delete-reason-label"
-                                label="Reason"
-                                value={deleteReason}
-                                onChange={(e) => setDeleteReason(e.target.value)}
-                            >
-                                {deleteReasonOptions.map((option) => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        {deleteReason === 'Others' && (
-                            <TextField
-                                fullWidth
-                                multiline
-                                minRows={3}
-                                label="Specify reason"
-                                value={otherDeleteReason}
-                                onChange={(e) => setOtherDeleteReason(e.target.value)}
-                                helperText="This specific reason will appear on SMS."
-                            />
-                        )}
-                    </>
-                ):(
-                    <Typography variant="body2" color="text.secondary">
-                        Are you sure you want to cancel this appointment?
-                    </Typography>
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onCloseDeletePopup} variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }}>
-                    Cancel
-                </Button>
-                <Button onClick={() => userType === 'admin' ? onConfirmAdminCancel() : onDeleteAppointment(deleteIdSelected)} color="error" variant="contained">
-                    Proceed
-                </Button>
-            </DialogActions>
-        </Dialog>
-    </>
-  )
+    return (
+        <>
+            <ToolbarFilter onSearch={handleSearch} dropDownOptions={dropDownOptions} enableExportPDF={userType === 'admin'} disableButtonExportPDF={totalItem == 0} onExportPDF={downloadPdf} />
+            <DataGrid
+                disableColumnMenu
+                rows={activityLogs}
+                columns={columnsByUserType}
+                getRowId={(row) => row.event_id}
+                getRowHeight={() => 'auto'}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                sortModel={sortModel}
+                onSortModelChange={(model) => {
+                    setSortModel(model);
+                    setPaginationModel((prev) => ({ ...prev, page: 0 }));
+                }}
+                sortingMode="server"
+                pageSizeOptions={[5, 10]}
+                sx={{
+                    border: 0,
+                    '& .MuiDataGrid-cell': {
+                        padding: '8px 16px',
+                        whiteSpace: 'normal',
+                        lineHeight: '1.5'
+                    }
+                }}
+                loading={loadList}
+                paginationMode="server"
+                rowCount={totalItem}
+                disableRowSelectionOnClick
+            />
+            <Activity mode={isEditAppointment ? "visible" : "hidden"}>
+                <EditAppointmentPopup open={isEditAppointment} handleClose={handleEditAppointmentClose} id={idSelected} />
+            </Activity>
+            <Activity mode={isViewAppointment ? "visible" : "hidden"}>
+                <ViewAppointmentPopup open={isViewAppointment} handleClose={handleViewAppointmentClose} id={idSelected} />
+            </Activity>
+            <Dialog open={isDeletePopupOpen} onClose={onCloseDeletePopup} fullWidth maxWidth="sm">
+                <DialogTitle>Cancel Appointment</DialogTitle>
+                <DialogContent sx={{ pt: 2, display: 'grid', gap: 2 }}>
+                    {userType === 'admin' ? (
+                        <>
+                            <FormControl fullWidth>
+                                <InputLabel id="delete-reason-label">Reason</InputLabel>
+                                <Select
+                                    labelId="delete-reason-label"
+                                    label="Reason"
+                                    value={deleteReason}
+                                    onChange={(e) => setDeleteReason(e.target.value)}
+                                >
+                                    {deleteReasonOptions.map((option) => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            {deleteReason === 'Others' && (
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    minRows={3}
+                                    label="Specify reason"
+                                    value={otherDeleteReason}
+                                    onChange={(e) => setOtherDeleteReason(e.target.value)}
+                                    helperText="This specific reason will appear on SMS."
+                                />
+                            )}
+                        </>
+                    ) : (
+                        <Typography variant="body2" color="text.secondary">
+                            Are you sure you want to cancel this appointment?
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onCloseDeletePopup} variant="outlined" sx={{ borderColor: PrimaryColor, color: PrimaryColor }}>
+                        Cancel
+                    </Button>
+                    <Button onClick={() => userType === 'admin' ? onConfirmAdminCancel() : onDeleteAppointment(deleteIdSelected)} color="error" variant="contained">
+                        Proceed
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    )
 }
 
 export default ActivityLog
