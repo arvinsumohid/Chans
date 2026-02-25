@@ -242,6 +242,7 @@ const ActivityLog = ({ eventType = 'appointment', userType = 'admin' }) => {
         await onCancelAppointment(deleteIdSelected, reasonToSend);
         await setIsDeletePopupOpen(false);
         setLoadList(true);
+        showAlert('Appointment canceled successfully', 'success');
     };
 
     const downloadPdf = async (from, to) => {
